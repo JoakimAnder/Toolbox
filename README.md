@@ -1,2 +1,46 @@
-# Toolbox
-A collection of helper classes I've tired of copy-pasting all over the place.
+# JoakimAnder.Toolbox
+
+A collection of helper classes and utilities I've grown tired of copy-pasting between projects.
+
+[![NuGet](https://img.shields.io/nuget/v/JoakimAnder.Toolbox.svg)](https://www.nuget.org/packages/JoakimAnder.Toolbox/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Installation
+
+```sh
+dotnet add package JoakimAnder.Toolbox
+```
+
+Requires .NET 10 or later.
+
+## What's in the box
+
+Nothing yet — this is the initial scaffolding. See [docs/ROADMAP.md](docs/ROADMAP.md)
+for the planned features (Result, ParallelFanout, DI source generator).
+
+## Project structure
+
+- `src/JoakimAnder.Toolbox` — the library
+- `src/JoakimAnder.Toolbox.SourceGenerators` — source generators, packed into the main NuGet
+- `tests/` — xUnit test projects
+- `examples/` — runnable usage examples
+
+## Building locally
+
+```sh
+dotnet build
+dotnet test
+```
+
+## Versioning
+
+Versions are derived from git tags via [MinVer](https://github.com/adamralph/minver).
+Tag a commit `v1.2.3` to release `1.2.3` to NuGet.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## AI usage
+
+See [AI_DISCLOSURE.md](AI_DISCLOSURE.md).
