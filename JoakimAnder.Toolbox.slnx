@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj" />
     <Project Path="src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj" />
   </Folder>
 </Solution>
