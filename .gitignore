@@ -55,3 +55,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Editors / IDEs
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
