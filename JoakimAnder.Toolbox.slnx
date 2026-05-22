@@ -3,4 +3,8 @@
     <Project Path="src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj" />
     <Project Path="src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/JoakimAnder.Toolbox.SourceGenerators.Tests/JoakimAnder.Toolbox.SourceGenerators.Tests.csproj" />
+    <Project Path="tests/JoakimAnder.Toolbox.Tests/JoakimAnder.Toolbox.Tests.csproj" />
+  </Folder>
 </Solution>
