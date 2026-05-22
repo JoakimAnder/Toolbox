@@ -10,3 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Repository scaffolding: solution layout, build configuration, documentation.
+- Main library project (`JoakimAnder.Toolbox`) targeting .NET 10.
+- Source generator project (`JoakimAnder.Toolbox.SourceGenerators`) bundled into the main NuGet at `analyzers/dotnet/cs/`.
+- xUnit smoke tests for main library and source generators.
+- Runnable examples project.
+- MinVer-driven versioning, SourceLink, symbol package (.snupkg), AOT compatibility.
