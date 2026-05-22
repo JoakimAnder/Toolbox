@@ -4,57 +4,57 @@
     {
       "id": 9,
       "subject": "Task 1: Repo-wide build configuration",
-      "status": "pending",
+      "status": "completed",
       "description": "**Goal:** Lay down the centralized build/tooling configuration that every project in the repo will inherit (Directory.Build.props, Directory.Packages.props, global.json, .editorconfig, .gitattributes, .gitignore additions).\n\n**Files:**\n- Create: Directory.Build.props\n- Create: Directory.Packages.props\n- Create: global.json\n- Create: .editorconfig\n- Create: .gitattributes\n- Modify: .gitignore (append editor folders)\n\n**Acceptance Criteria:**\n- [ ] All six files exist with the exact content shown in plan task 1.\n- [ ] dotnet --version reports an SDK whose major.minor is 10.0.\n- [ ] Existing .gitignore content preserved; new entries appended.\n\n**Verify:** ls Directory.Build.props Directory.Packages.props global.json .editorconfig .gitattributes && dotnet --version\n\n```json:metadata\n{\"files\": [\"Directory.Build.props\", \"Directory.Packages.props\", \"global.json\", \".editorconfig\", \".gitattributes\", \".gitignore\"], \"verifyCommand\": \"ls Directory.Build.props Directory.Packages.props global.json .editorconfig .gitattributes && dotnet --version\", \"acceptanceCriteria\": [\"All six files exist\", \"dotnet --version reports 10.0.x\", \"Existing .gitignore content preserved\"]}\n```"
     },
     {
       "id": 10,
       "subject": "Task 2: Root documentation files",
-      "status": "pending",
+      "status": "completed",
       "description": "**Goal:** Write the user-facing root docs (README.md, CHANGELOG.md, AI_DISCLOSURE.md). README must exist before main lib's dotnet pack runs.\n\n**Files:**\n- Modify: README.md (replace existing minimal version)\n- Create: CHANGELOG.md\n- Create: AI_DISCLOSURE.md\n\n**Acceptance Criteria:**\n- [ ] README.md contains the full content from plan task 2.\n- [ ] CHANGELOG.md exists with the Keep a Changelog template.\n- [ ] AI_DISCLOSURE.md exists with the disclosure prose.\n\n**Verify:** head -1 README.md CHANGELOG.md AI_DISCLOSURE.md\n\n```json:metadata\n{\"files\": [\"README.md\", \"CHANGELOG.md\", \"AI_DISCLOSURE.md\"], \"verifyCommand\": \"head -1 README.md CHANGELOG.md AI_DISCLOSURE.md\", \"acceptanceCriteria\": [\"README.md replaced with full content\", \"CHANGELOG.md created with Keep a Changelog template\", \"AI_DISCLOSURE.md created with disclosure prose\"]}\n```"
     },
     {
       "id": 11,
       "subject": "Task 3: Solution file and main library project",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [9],
       "description": "**Goal:** Create the solution file, the src/ tier overrides, and the main library project with a placeholder file. Source generator is NOT wired yet.\n\n**Files:**\n- Create: JoakimAnder.Toolbox.sln\n- Create: src/Directory.Build.props\n- Create: src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj\n- Create: src/JoakimAnder.Toolbox/Placeholder.cs\n\n**Acceptance Criteria:**\n- [ ] Solution file references main lib project.\n- [ ] dotnet build exits 0 with zero warnings.\n- [ ] dotnet pack produces .nupkg and .snupkg.\n\n**Verify:** dotnet build -c Release && dotnet pack src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj -c Release -o ./artifacts\n\n```json:metadata\n{\"files\": [\"JoakimAnder.Toolbox.sln\", \"src/Directory.Build.props\", \"src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj\", \"src/JoakimAnder.Toolbox/Placeholder.cs\"], \"verifyCommand\": \"dotnet build -c Release && dotnet pack src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj -c Release -o ./artifacts && ls artifacts/\", \"acceptanceCriteria\": [\"Solution file references main lib\", \"Main lib builds with zero warnings\", \"Pack produces .nupkg and .snupkg\"]}\n```"
     },
     {
       "id": 12,
       "subject": "Task 4: Source generator project",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [9, 11],
       "description": "**Goal:** Create the source generator project as a standalone netstandard2.0 Roslyn component.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj\n- Create: src/JoakimAnder.Toolbox.SourceGenerators/Placeholder.cs\n\n**Acceptance Criteria:**\n- [ ] Source generator project builds standalone.\n- [ ] Target framework is netstandard2.0.\n- [ ] Project added to solution.\n- [ ] IsPackable=false.\n\n**Verify:** dotnet build src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj\", \"src/JoakimAnder.Toolbox.SourceGenerators/Placeholder.cs\"], \"verifyCommand\": \"dotnet build src/JoakimAnder.Toolbox.SourceGenerators/JoakimAnder.Toolbox.SourceGenerators.csproj -c Release\", \"acceptanceCriteria\": [\"Source gen project builds standalone\", \"Target framework is netstandard2.0\", \"Project added to solution\", \"No .nupkg produced\"]}\n```"
     },
     {
       "id": 13,
       "subject": "Task 5: Wire source generator into main library and pack",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [11, 12],
       "description": "**Goal:** Modify the main library csproj to reference the source generator as an analyzer AND repack the generator's DLL into the main NuGet at analyzers/dotnet/cs/.\n\n**Files:**\n- Modify: src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj\n\n**Acceptance Criteria:**\n- [ ] Main lib csproj declares source gen as analyzer-only reference.\n- [ ] Build chain works.\n- [ ] .nupkg contains analyzers/dotnet/cs/JoakimAnder.Toolbox.SourceGenerators.dll.\n- [ ] .nuspec does NOT list source gen as dependency.\n\n**Verify:** dotnet pack && unzip -l artifacts/JoakimAnder.Toolbox.*.nupkg | grep analyzers/dotnet/cs\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj\"], \"verifyCommand\": \"dotnet pack src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj -c Release -o ./artifacts && unzip -l artifacts/JoakimAnder.Toolbox.*.nupkg | grep 'analyzers/dotnet/cs/JoakimAnder.Toolbox.SourceGenerators.dll'\", \"acceptanceCriteria\": [\"Main lib references source gen as analyzer-only\", \"Build chains correctly\", \".nupkg contains analyzer DLL\", \".nuspec does not list source gen as dependency\"]}\n```"
     },
     {
       "id": 14,
       "subject": "Task 6: Test projects with smoke tests",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [13],
       "description": "**Goal:** Create the tests/ tier overrides and both test projects with one passing xUnit smoke test each.\n\n**Files:**\n- Create: tests/Directory.Build.props\n- Create: tests/JoakimAnder.Toolbox.Tests/JoakimAnder.Toolbox.Tests.csproj\n- Create: tests/JoakimAnder.Toolbox.Tests/SmokeTests.cs\n- Create: tests/JoakimAnder.Toolbox.SourceGenerators.Tests/JoakimAnder.Toolbox.SourceGenerators.Tests.csproj\n- Create: tests/JoakimAnder.Toolbox.SourceGenerators.Tests/SmokeTests.cs\n\n**Acceptance Criteria:**\n- [ ] Both test projects in solution.\n- [ ] dotnet test runs both projects.\n- [ ] Both smoke tests pass.\n- [ ] Test projects not packable.\n\n**Verify:** dotnet test -c Release\n\n```json:metadata\n{\"files\": [\"tests/Directory.Build.props\", \"tests/JoakimAnder.Toolbox.Tests/JoakimAnder.Toolbox.Tests.csproj\", \"tests/JoakimAnder.Toolbox.Tests/SmokeTests.cs\", \"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/JoakimAnder.Toolbox.SourceGenerators.Tests.csproj\", \"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/SmokeTests.cs\"], \"verifyCommand\": \"dotnet test -c Release\", \"acceptanceCriteria\": [\"Both test projects in solution\", \"dotnet test runs both projects\", \"Both smoke tests pass\", \"Test projects are not packable\"]}\n```"
     },
     {
       "id": 15,
       "subject": "Task 7: Examples project",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [11],
       "description": "**Goal:** Create the examples/ tier overrides and a runnable console example project.\n\n**Files:**\n- Create: examples/Directory.Build.props\n- Create: examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj\n- Create: examples/JoakimAnder.Toolbox.Examples/Program.cs\n\n**Acceptance Criteria:**\n- [ ] Examples project in solution.\n- [ ] dotnet run prints expected message.\n- [ ] Examples project not packable.\n\n**Verify:** dotnet run --project examples/JoakimAnder.Toolbox.Examples -c Release\n\n```json:metadata\n{\"files\": [\"examples/Directory.Build.props\", \"examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj\", \"examples/JoakimAnder.Toolbox.Examples/Program.cs\"], \"verifyCommand\": \"dotnet run --project examples/JoakimAnder.Toolbox.Examples -c Release\", \"acceptanceCriteria\": [\"Examples project in solution\", \"dotnet run prints expected message\", \"Examples project is not packable\"]}\n```"
     },
     {
       "id": 16,
       "subject": "Task 8: Final verification per completion criteria",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [10, 13, 14, 15],
       "description": "**Goal:** Run the complete acceptance checklist from the spec and confirm Foundation is genuinely done. Also expand CHANGELOG.\n\n**Files:**\n- Modify: CHANGELOG.md (expand Unreleased Added section)\n\n**Acceptance Criteria:**\n- [ ] restore/build/test/pack all exit 0 with zero warnings.\n- [ ] .nupkg contains analyzer DLL + README + lib DLL.\n- [ ] .nuspec contains MIT license + repo URL + readme reference.\n- [ ] .snupkg contains .pdb.\n- [ ] Working tree clean.\n- [ ] CHANGELOG Unreleased section expanded.\n\n**Verify:** Full sequence in plan doc Task 8 Steps 1-9.\n\n```json:metadata\n{\"files\": [\"CHANGELOG.md\"], \"verifyCommand\": \"dotnet restore && dotnet build -c Release && dotnet test -c Release && dotnet pack src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj -c Release -o ./artifacts && unzip -l artifacts/JoakimAnder.Toolbox.*.nupkg | grep 'analyzers/dotnet/cs/JoakimAnder.Toolbox.SourceGenerators.dll'\", \"acceptanceCriteria\": [\"restore/build/test/pack all exit 0\", \".nupkg contains analyzer DLL + README + main lib DLL\", \".nuspec contains MIT + repo URL + readme\", \".snupkg contains .pdb\", \"working tree clean\", \"CHANGELOG expanded\"]}\n```"
     }
   ],
-  "lastUpdated": "2026-05-22T00:00:00Z"
+  "lastUpdated": "2026-05-22T22:00:00Z"
 }
