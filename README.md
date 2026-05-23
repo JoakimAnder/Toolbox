@@ -3,6 +3,7 @@
 A collection of helper classes and utilities I've grown tired of copy-pasting between projects.
 
 [![NuGet](https://img.shields.io/nuget/v/JoakimAnder.Toolbox.svg)](https://www.nuget.org/packages/JoakimAnder.Toolbox/)
+[![CI](https://github.com/JoakimAnder/Toolbox/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JoakimAnder/Toolbox/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Installation
