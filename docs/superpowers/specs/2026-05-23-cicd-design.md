@@ -40,14 +40,14 @@ Out of scope (deferred to a future sub-project):
 | NuGet.org auth | Trusted publishing via OIDC | No long-lived API key; no secret rotation; uses `NuGet/login@v1` to exchange a GitHub OIDC token for a short-lived NuGet token. |
 | CI triggers | Push to `main` + all pull requests | Solo dev who mostly works via PRs but sometimes commits straight to `main`. Feature-branch pushes don't burn Actions minutes on their own. |
 | Runner | `ubuntu-latest` only | Class library — no platform-specific code; cheapest, fastest runner. |
-| Lockfiles | Enabled repo-wide via `RestorePackagesWithLockFile=true` | Stable cache key; `--locked-mode` on release prevents silent dependency drift between CI and release. |
+| Lockfiles | Enabled repo-wide via `RestorePackagesWithLockFile=true` | Stable cache key for `actions/setup-dotnet@v4`. (`--locked-mode` on release was attempted but abandoned — see [SDK pinning](#decisions) and the [Lockfiles and --locked-mode](#lockfiles-and---locked-mode) note below.) |
 | Caching | `actions/setup-dotnet@v4` built-in cache, keyed on `**/packages.lock.json` | Modern, minimal config; lockfiles give a stable cache key. |
 | Concurrency (CI) | Group by ref; `cancel-in-progress` only on pull requests | A new PR push cancels prior runs; main-branch pushes never cancel each other. |
 | Concurrency (release) | None | A partial publish is worse than wasted minutes. |
 | Permissions | `contents: read` everywhere; release adds `id-token: write` | Least privilege. OIDC exchange requires `id-token: write`. |
 | Deployment environment | `nuget-release` (empty, no required reviewers) | Surfaces releases in the repo's deployments timeline; future hatch for adding protection rules without touching the workflow. |
 | Test logger | Default console logger | The `GitHubActions` logger (Tyrrrz/GitHubActionsTestLogger) would give inline PR annotations but requires a package reference; deferred since smoke tests need only pass/fail counts. |
-| SDK pinning | `global.json` rollForward: `disable` | Required for lockfile + `--locked-mode` reproducibility. SDK-bundled packages (e.g. `Microsoft.NET.ILLink.Tasks`) drift across feature bands; pinning ensures the runner uses the same SDK the lockfiles were generated against. SDK upgrades require an explicit `global.json` + lockfile-regeneration commit. (Overrides the foundation spec's `latestFeature` choice.) |
+| SDK pinning | `global.json` rollForward: `disable` | Predictable builds across local + CI; setup-dotnet@v4 installs the exact pinned SDK. SDK upgrades require an explicit `global.json` (+ lockfile if drift occurs) commit. (Overrides the foundation spec's `latestFeature` choice.) |
 | First version | `v0.2.0` | First real tag once the pipeline is verified end-to-end. (`v0.1.0` was an unpublished foundation milestone tag.) |
 
 ## File layout
@@ -134,7 +134,7 @@ jobs:
           cache: true
           cache-dependency-path: '**/packages.lock.json'
 
-      - run: dotnet restore --locked-mode
+      - run: dotnet restore
       - run: dotnet build -c Release --no-restore
       - run: dotnet test -c Release --no-build
 
@@ -154,7 +154,7 @@ jobs:
 
 Notes:
 - `id-token: write` is mandatory for the OIDC exchange.
-- `--locked-mode` on the release restore prevents the release from silently restoring a different dependency graph than CI tested.
+- The release restore does NOT use `--locked-mode`; see [Lockfiles and --locked-mode](#lockfiles-and---locked-mode) below.
 - Tests are re-run before publish in case a tag is pushed at an older commit than the latest green CI run.
 - `--no-build` on `pack` reuses the build artifacts and avoids re-running source generators.
 - The `*.nupkg` glob matches only the main package file. `dotnet nuget push` automatically uploads any sibling `.snupkg` symbol package alongside it, so the symbols ship on the same push without an extra command.
@@ -197,6 +197,15 @@ examples/JoakimAnder.Toolbox.Examples/packages.lock.json
 ```
 
 The repo's current `.gitignore` does not exclude `packages.lock.json`, so no `.gitignore` change is needed — just verify after generation.
+
+### Lockfiles and `--locked-mode`
+
+The original design used `dotnet restore --locked-mode` on the release workflow to guarantee the release built against the exact dependency graph CI tested. End-to-end testing revealed two distinct failures that locked-mode cannot tolerate:
+
+1. **Feature-band drift** (`NU1004`). `Microsoft.NET.ILLink.Tasks` (an SDK-bundled trim/AOT tool) version is determined by the active .NET SDK feature band. With `global.json` originally set to `rollForward: latestFeature`, the runner picked a higher feature-band SDK than the local machine that generated the lockfiles. Fixed by pinning to `rollForward: disable` (recorded above).
+2. **Cross-source hash drift** (`NU1403`). Even with the same package version, the SHA-512 hash recorded in the lockfile differed between the local machine (which restored from the SDK's implicit NuGet fallback folder) and the runner (which restored from nuget.org). Microsoft ships bit-different builds through these channels for the same package ID/version.
+
+After working around both, it became clear that locked-mode in .NET 10's SDK + lockfile ecosystem is a leaky abstraction for SDK-bundled packages and would require ongoing maintenance every time the SDK or runner image shifted. The decision was to **drop `--locked-mode` from the release workflow** and accept the weaker guarantee that release runs in the same runner image as CI minutes apart. Lockfiles remain in the repo because they still serve as a stable cache key for `actions/setup-dotnet@v4` — their original primary purpose in this design.
 
 ## README CI badge
 

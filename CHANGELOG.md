@@ -21,4 +21,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly to make lockfile-based `--locked-mode` releases work across local and CI environments.
+- `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly for predictable builds across local and CI environments.
+- Release workflow restore no longer uses `--locked-mode`. Lockfiles remain in the repo as the stable cache key for `actions/setup-dotnet@v4`, but the strict cross-environment hash check on release was incompatible with how the .NET SDK ships and signs its bundled packages (see the design spec).
