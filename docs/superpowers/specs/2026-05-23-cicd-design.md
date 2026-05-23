@@ -47,7 +47,8 @@ Out of scope (deferred to a future sub-project):
 | Permissions | `contents: read` everywhere; release adds `id-token: write` | Least privilege. OIDC exchange requires `id-token: write`. |
 | Deployment environment | `nuget-release` (empty, no required reviewers) | Surfaces releases in the repo's deployments timeline; future hatch for adding protection rules without touching the workflow. |
 | Test logger | Default console logger | The `GitHubActions` logger (Tyrrrz/GitHubActionsTestLogger) would give inline PR annotations but requires a package reference; deferred since smoke tests need only pass/fail counts. |
-| First version | `v0.1.0` | First real tag once the pipeline is verified end-to-end. |
+| SDK pinning | `global.json` rollForward: `disable` | Required for lockfile + `--locked-mode` reproducibility. SDK-bundled packages (e.g. `Microsoft.NET.ILLink.Tasks`) drift across feature bands; pinning ensures the runner uses the same SDK the lockfiles were generated against. SDK upgrades require an explicit `global.json` + lockfile-regeneration commit. (Overrides the foundation spec's `latestFeature` choice.) |
+| First version | `v0.2.0` | First real tag once the pipeline is verified end-to-end. (`v0.1.0` was an unpublished foundation milestone tag.) |
 
 ## File layout
 

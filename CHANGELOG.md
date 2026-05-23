@@ -18,3 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI workflow (build + test on push to `main` and on pull requests).
 - GitHub Actions release workflow (publish to NuGet.org on `v*` tag push, using OIDC trusted publishing).
 - NuGet lockfiles enabled repo-wide for reproducible restores and stable CI caching.
+
+### Changed
+
+- `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly to make lockfile-based `--locked-mode` releases work across local and CI environments.
