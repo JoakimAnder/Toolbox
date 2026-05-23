@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: nuget-release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - run: dotnet restore --locked-mode
+      - run: dotnet build -c Release --no-restore
+      - run: dotnet test -c Release --no-build --logger "GitHubActions;summary.includePassedTests=false"
+
+      - run: dotnet pack -c Release --no-build -o ./artifacts src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj
+
+      - uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          api-key-source-url: https://api.nuget.org/v3/index.json
+
+      - run: >
+          dotnet nuget push ./artifacts/*.nupkg
+          --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
