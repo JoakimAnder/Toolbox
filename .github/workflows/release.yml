@@ -32,7 +32,7 @@ jobs:
       - uses: NuGet/login@v1
         id: nuget-login
         with:
-          api-key-source-url: https://api.nuget.org/v3/index.json
+          user: JoakimAnder
 
       - run: >
           dotnet nuget push ./artifacts/*.nupkg
