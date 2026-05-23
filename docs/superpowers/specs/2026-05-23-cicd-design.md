@@ -46,7 +46,7 @@ Out of scope (deferred to a future sub-project):
 | Concurrency (release) | None | A partial publish is worse than wasted minutes. |
 | Permissions | `contents: read` everywhere; release adds `id-token: write` | Least privilege. OIDC exchange requires `id-token: write`. |
 | Deployment environment | `nuget-release` (empty, no required reviewers) | Surfaces releases in the repo's deployments timeline; future hatch for adding protection rules without touching the workflow. |
-| Test logger | `GitHubActions` xUnit logger | Inline annotations on failed tests in PR/check UI. |
+| Test logger | Default console logger | The `GitHubActions` logger (Tyrrrz/GitHubActionsTestLogger) would give inline PR annotations but requires a package reference; deferred since smoke tests need only pass/fail counts. |
 | First version | `v0.1.0` | First real tag once the pipeline is verified end-to-end. |
 
 ## File layout
@@ -97,13 +97,13 @@ jobs:
 
       - run: dotnet restore
       - run: dotnet build -c Release --no-restore
-      - run: dotnet test -c Release --no-build --logger "GitHubActions;summary.includePassedTests=false"
+      - run: dotnet test -c Release --no-build
 ```
 
 Notes:
 - `fetch-depth: 0` is required by MinVer to compute the version from git history.
 - CI does **not** use `--locked-mode` on restore — lockfile drift surfaces as a normal warning during PR review rather than a hard failure.
-- The `GitHubActions` test logger ships with the test SDK; no extra package reference needed.
+- The test step uses the default console logger. The `GitHubActions` logger (Tyrrrz/GitHubActionsTestLogger) would give inline PR annotations on failed tests but requires adding a package; deferred until there are tests that benefit from per-test reporting.
 
 ## Workflow: `release.yml`
 
@@ -135,7 +135,7 @@ jobs:
 
       - run: dotnet restore --locked-mode
       - run: dotnet build -c Release --no-restore
-      - run: dotnet test -c Release --no-build --logger "GitHubActions;summary.includePassedTests=false"
+      - run: dotnet test -c Release --no-build
 
       - run: dotnet pack -c Release --no-build -o ./artifacts src/JoakimAnder.Toolbox/JoakimAnder.Toolbox.csproj
 

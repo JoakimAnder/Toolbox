@@ -29,4 +29,4 @@ jobs:
 
       - run: dotnet restore
       - run: dotnet build -c Release --no-restore
-      - run: dotnet test -c Release --no-build --logger "GitHubActions;summary.includePassedTests=false"
+      - run: dotnet test -c Release --no-build
