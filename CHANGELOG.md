@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-05-23
+
 ### Added
 
 - Repository scaffolding: solution layout, build configuration, documentation.
@@ -22,3 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly for predictable builds across local and CI environments.
 - `actions/setup-dotnet@v4` cache key is now `Directory.Packages.props` (Central Package Management's version source), so the cache invalidates only on real version changes.
+
+[Unreleased]: https://github.com/JoakimAnder/Toolbox/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/JoakimAnder/Toolbox/releases/tag/v0.2.0
