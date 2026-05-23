@@ -21,7 +21,7 @@ jobs:
         with:
           global-json-file: global.json
           cache: true
-          cache-dependency-path: '**/packages.lock.json'
+          cache-dependency-path: 'Directory.Packages.props'
 
       - run: dotnet restore
       - run: dotnet build -c Release --no-restore
