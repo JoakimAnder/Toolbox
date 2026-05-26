@@ -109,4 +109,35 @@ public class FanOutBuilderTests
         await FanOut.Create().WhenAll();
         await default(FanOut).WhenAll();
     }
+
+    [Fact]
+    public async Task Arity_three_returns_results_in_order()
+    {
+        var (a, b, c) = await new FanOut()
+            .Add(_ => Task.FromResult(1))
+            .Add(_ => Task.FromResult("two"))
+            .Add(_ => Task.FromResult(3.0))
+            .WhenAll();
+
+        Assert.Equal(1, a);
+        Assert.Equal("two", b);
+        Assert.Equal(3.0, c);
+    }
+
+    [Fact]
+    public async Task Arity_eight_returns_all_results_in_order()
+    {
+        var (r1, r2, r3, r4, r5, r6, r7, r8) = await new FanOut()
+            .Add(_ => Task.FromResult(1))
+            .Add(_ => Task.FromResult(2))
+            .Add(_ => Task.FromResult(3))
+            .Add(_ => Task.FromResult(4))
+            .Add(_ => Task.FromResult(5))
+            .Add(_ => Task.FromResult(6))
+            .Add(_ => Task.FromResult(7))
+            .Add(_ => Task.FromResult(8))
+            .WhenAll();
+
+        Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8), (r1, r2, r3, r4, r5, r6, r7, r8));
+    }
 }
