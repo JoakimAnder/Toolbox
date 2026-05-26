@@ -41,4 +41,24 @@ public class FanOutStaticTypedTests
 
         Assert.Equal("boom", ex.Message);
     }
+
+    [Fact]
+    public async Task Outer_cancellation_throws_operation_canceled()
+    {
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => FanOut.WhenAll(
+            async ct => { await Task.Delay(TimeSpan.FromSeconds(30), ct); return 1; },
+            async ct => { await Task.Delay(TimeSpan.FromSeconds(30), ct); return 2; },
+            cts.Token));
+    }
+
+    [Fact]
+    public async Task Null_operation_throws_argument_null()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() => FanOut.WhenAll(
+            (Func<CancellationToken, Task<int>>)null!,
+            _ => Task.FromResult(2)));
+    }
 }
