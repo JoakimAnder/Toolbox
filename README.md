@@ -16,8 +16,27 @@ Requires .NET 10 or later.
 
 ## What's in the box
 
-Nothing yet — this is the initial scaffolding. See [docs/ROADMAP.md](docs/ROADMAP.md)
-for the planned features (Result, ParallelFanout, DI source generator).
+### ParallelFanout — `JoakimAnder.Toolbox.Threading.FanOut`
+
+Run several async operations that must *all* succeed, and cancel the rest the instant one
+fails — so a long-running sibling isn't left burning time and resources after the outcome
+is already decided.
+
+```csharp
+using JoakimAnder.Toolbox.Threading;
+
+var (user, orders) = await new FanOut()
+    .Add(ct => GetUserAsync(ct))
+    .Add(ct => GetOrdersAsync(ct))
+    .WhenAll(cancellationToken);
+```
+
+If `GetUserAsync` throws, the token handed to `GetOrdersAsync` is cancelled and the original
+exception is rethrown unwrapped. Operations are factories (`ct => …`) so the token can be
+threaded into each one. A static `FanOut.WhenAll(...)` is also available for quick one-liners
+and `void` operations.
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result, DI source generator).
 
 ## Project structure
 

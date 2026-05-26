@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `ParallelFanout` (`JoakimAnder.Toolbox.Threading.FanOut`): fail-fast parallel execution of async operations that must all succeed, cancelling the remaining operations on the first fault. Fluent typed builder (`new FanOut().Add(...).Add(...).WhenAll(ct)`) plus static `WhenAll` overloads — void and typed, arity 2–8, and an `IEnumerable` void overload.
+
 ## [0.2.0] — 2026-05-23
 
 ### Added
