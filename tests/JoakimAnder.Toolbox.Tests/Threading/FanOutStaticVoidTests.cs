@@ -65,15 +65,17 @@ public class FanOutStaticVoidTests
     }
 
     [Fact]
-    public async Task Enumerable_overload_null_collection_throws()
+    public void Enumerable_overload_null_collection_throws()
     {
-        await Assert.ThrowsAsync<ArgumentNullException>(() => FanOut.WhenAll((IEnumerable<Func<CancellationToken, Task>>)null!));
+        Assert.Throws<ArgumentNullException>(
+            () => { _ = FanOut.WhenAll((IEnumerable<Func<CancellationToken, Task>>)null!); });
     }
 
     [Fact]
-    public async Task Enumerable_overload_null_element_throws()
+    public void Enumerable_overload_null_element_throws()
     {
         var ops = new Func<CancellationToken, Task>[] { _ => Task.CompletedTask, null! };
-        await Assert.ThrowsAsync<ArgumentException>(() => FanOut.WhenAll(ops));
+        Assert.Throws<ArgumentException>(
+            () => { _ = FanOut.WhenAll(ops); });
     }
 }
