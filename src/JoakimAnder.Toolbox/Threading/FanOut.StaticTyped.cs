@@ -2,6 +2,7 @@ namespace JoakimAnder.Toolbox.Threading;
 
 public readonly partial struct FanOut
 {
+    // Typed overloads have no fire-and-forget (void) operations.
     private static readonly Func<CancellationToken, Task>[] NoVoids = [];
 
     public static async Task<(T1, T2)> WhenAll<T1, T2>(

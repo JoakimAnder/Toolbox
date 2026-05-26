@@ -2,6 +2,7 @@ namespace JoakimAnder.Toolbox.Threading;
 
 public readonly partial struct FanOut
 {
+    // Void overloads produce no typed results.
     private static readonly Func<CancellationToken, Task<object?>>[] NoResults = [];
 
     public static Task WhenAll(

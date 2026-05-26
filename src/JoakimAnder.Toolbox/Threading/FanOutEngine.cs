@@ -65,6 +65,9 @@ internal static class FanOutEngine
         return results;
     }
 
+    // Result ops are boxed through Task<object?>: a value-type result is boxed, a reference-type
+    // result is upcast. Consumers cast back with (T)r[i]!; the ! is intentional because a nullable
+    // reference Ti may legitimately yield null. Do NOT add a null-guard on the result here.
     public static Func<CancellationToken, Task<object?>> Box<T>(Func<CancellationToken, Task<T>> operation)
         => async ct =>
         {
