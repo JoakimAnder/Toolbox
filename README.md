@@ -33,8 +33,9 @@ var (user, orders) = await new FanOut()
 
 If `GetUserAsync` throws, the token handed to `GetOrdersAsync` is cancelled and the original
 exception is rethrown unwrapped. Operations are factories (`ct => …`) so the token can be
-threaded into each one. A static `FanOut.WhenAll(...)` is also available for quick one-liners
-and `void` operations.
+threaded into each one. A static `FanOut.WhenAll(op1, op2, …)` is also available for quick one-liners — both typed
+(returning a tuple) and `void`, for arities 2–8, plus an
+`IEnumerable<Func<CancellationToken, Task>>` overload for dynamic counts.
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result, DI source generator).
 

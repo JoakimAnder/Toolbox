@@ -14,10 +14,11 @@ try
 
     Console.WriteLine($"Got {user} with {orders.Length} orders.");
 }
+// Only GetUserAsync faults here (InvalidOperationException); real code would catch Exception.
 catch (InvalidOperationException ex)
 {
     Console.WriteLine($"\nFan-out failed after {sw.ElapsedMilliseconds} ms: {ex.Message}");
-    Console.WriteLine("(The 30s order fetch was cancelled instead of running to completion.)");
+    Console.WriteLine("(Audit already completed; the 30s order fetch was cancelled before it could finish.)");
 }
 
 static async Task<string> GetUserAsync(CancellationToken ct)
