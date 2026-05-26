@@ -77,6 +77,25 @@ public class FanOutBuilderTests
     }
 
     [Fact]
+    public async Task Faulting_void_op_propagates_unwrapped_and_cancels_siblings()
+    {
+        var observed = false;
+        var builder = new FanOut()
+            .Add<int>(async ct =>
+            {
+                try { await Task.Delay(TimeSpan.FromSeconds(30), ct); }
+                catch (OperationCanceledException) { observed = true; throw; }
+                return 1;
+            })
+            .Add(_ => Task.FromException(new InvalidOperationException("void boom")));
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => builder.WhenAll());
+
+        Assert.Equal("void boom", ex.Message);
+        Assert.True(observed, "slow sibling should have observed cancellation");
+    }
+
+    [Fact]
     public void Add_null_operation_throws_argument_null()
     {
         Assert.Throws<ArgumentNullException>(() => new FanOut().Add((Func<CancellationToken, Task>)null!));

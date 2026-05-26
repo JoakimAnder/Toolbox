@@ -73,6 +73,8 @@ internal static class FanOutEngine
             return await task.ConfigureAwait(false);
         };
 
+    // Result ops arrive pre-wrapped by Box (an async lambda that already converts a null Task or a
+    // synchronous throw into a faulted task), so the null-guard and try/catch below are defense-in-depth.
     private static Task<object?> InvokeResult(Func<CancellationToken, Task<object?>> op, CancellationToken token)
     {
         try

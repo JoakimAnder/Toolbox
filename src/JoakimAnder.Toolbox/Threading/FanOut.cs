@@ -5,6 +5,7 @@ namespace JoakimAnder.Toolbox.Threading;
 /// operation to fault cancels the linked token handed to the rest, and its
 /// exception is rethrown unwrapped. Immutable: each <c>Add</c> returns a new builder.
 /// </summary>
+// The static WhenAll convenience overloads (accepting Task/Task<T> delegates directly) land in later partial declarations (Tasks 3 and 4).
 public readonly partial struct FanOut
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
