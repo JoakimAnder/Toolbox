@@ -1,0 +1,40 @@
+{
+  "planPath": "docs/superpowers/plans/2026-05-26-parallelfanout.md",
+  "tasks": [
+    {
+      "id": 13,
+      "subject": "Task 1: Engine + builder arity 0–2",
+      "status": "pending",
+      "description": "**Goal:** Shared engine plus FanOut (arity 0), FanOut<T1>, FanOut<T1,T2> (temporary ceiling), proving fail-fast/cancellation semantics through arity 2.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Threading/FanOutEngine.cs\n- Create: src/JoakimAnder.Toolbox/Threading/FanOutArray.cs\n- Create: src/JoakimAnder.Toolbox/Threading/FanOut.cs\n- Create: src/JoakimAnder.Toolbox/Threading/FanOutBuilders.cs\n- Delete: src/JoakimAnder.Toolbox/Placeholder.cs\n- Test: tests/JoakimAnder.Toolbox.Tests/Threading/FanOutBuilderTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~FanOutBuilderTests\"\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Threading/FanOutEngine.cs\", \"src/JoakimAnder.Toolbox/Threading/FanOutArray.cs\", \"src/JoakimAnder.Toolbox/Threading/FanOut.cs\", \"src/JoakimAnder.Toolbox/Threading/FanOutBuilders.cs\", \"tests/JoakimAnder.Toolbox.Tests/Threading/FanOutBuilderTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~FanOutBuilderTests\\\"\", \"plan\": \"docs/superpowers/plans/2026-05-26-parallelfanout.md\"}\n```"
+    },
+    {
+      "id": 14,
+      "subject": "Task 2: Builder arity 3–8",
+      "status": "pending",
+      "blockedBy": [13],
+      "description": "**Goal:** Extend the builder ladder to arity 8; add Add<T3> to FanOut<T1,T2> and define FanOut<T1,T2,T3> … FanOut<T1..T8> (arity 8 = ceiling, no Add<TNext>).\n\n**Files:**\n- Modify: src/JoakimAnder.Toolbox/Threading/FanOutBuilders.cs\n- Test: tests/JoakimAnder.Toolbox.Tests/Threading/FanOutBuilderTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~FanOutBuilderTests\"\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Threading/FanOutBuilders.cs\", \"tests/JoakimAnder.Toolbox.Tests/Threading/FanOutBuilderTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~FanOutBuilderTests\\\"\", \"plan\": \"docs/superpowers/plans/2026-05-26-parallelfanout.md\"}\n```"
+    },
+    {
+      "id": 15,
+      "subject": "Task 3: Static void WhenAll overloads",
+      "status": "pending",
+      "blockedBy": [13],
+      "description": "**Goal:** Static void WhenAll overloads on FanOut — fixed arity 2–8 plus an IEnumerable overload.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Threading/FanOut.StaticVoid.cs\n- Test: tests/JoakimAnder.Toolbox.Tests/Threading/FanOutStaticVoidTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~FanOutStaticVoidTests\"\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Threading/FanOut.StaticVoid.cs\", \"tests/JoakimAnder.Toolbox.Tests/Threading/FanOutStaticVoidTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~FanOutStaticVoidTests\\\"\", \"plan\": \"docs/superpowers/plans/2026-05-26-parallelfanout.md\"}\n```"
+    },
+    {
+      "id": 16,
+      "subject": "Task 4: Static typed WhenAll overloads",
+      "status": "pending",
+      "blockedBy": [13],
+      "description": "**Goal:** Static generic WhenAll<T1..Tk> overloads (arity 2–8) returning a ValueTuple.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Threading/FanOut.StaticTyped.cs\n- Test: tests/JoakimAnder.Toolbox.Tests/Threading/FanOutStaticTypedTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~FanOutStaticTypedTests\"\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Threading/FanOut.StaticTyped.cs\", \"tests/JoakimAnder.Toolbox.Tests/Threading/FanOutStaticTypedTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~FanOutStaticTypedTests\\\"\", \"plan\": \"docs/superpowers/plans/2026-05-26-parallelfanout.md\"}\n```"
+    },
+    {
+      "id": 17,
+      "subject": "Task 5: Example + documentation",
+      "status": "pending",
+      "blockedBy": [14, 15, 16],
+      "description": "**Goal:** Runnable example of the motivating scenario plus README and CHANGELOG updates.\n\n**Files:**\n- Modify: examples/JoakimAnder.Toolbox.Examples/Program.cs\n- Modify: README.md\n- Modify: CHANGELOG.md\n\n**Verify:** dotnet run --project examples/JoakimAnder.Toolbox.Examples\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples/Program.cs\", \"README.md\", \"CHANGELOG.md\"], \"verifyCommand\": \"dotnet run --project examples/JoakimAnder.Toolbox.Examples\", \"plan\": \"docs/superpowers/plans/2026-05-26-parallelfanout.md\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-05-26"
+}
