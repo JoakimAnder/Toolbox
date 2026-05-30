@@ -39,6 +39,25 @@ threaded into each one. A static `FanOut.WhenAll(op1, op2, …)` is also availab
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result, DI source generator).
 
+### DI registration — attributes + source generator
+
+Mark a class with `[Singleton]`, `[Scoped]`, or `[Transient]` and the generator emits the
+`IServiceCollection` registration for you — no reflection, no hand-maintained `AddX` lists.
+
+```csharp
+using JoakimAnder.Toolbox.DependencyInjection;
+
+[Singleton(typeof(IClock))] class SystemClock : IClock { }
+[Scoped] class OrderService { }
+
+// in Program.cs:
+builder.Services.AddAttributedServices();
+```
+
+Omit the service type to register the concrete type itself. Use `Group = "..."` to emit a
+separate `AddAttributed<Group>Services()` method, and `Key = "..."` for keyed services. The
+attributes are generated into your assembly, so there is no extra runtime dependency.
+
 ## Project structure
 
 - `src/JoakimAnder.Toolbox` — the library

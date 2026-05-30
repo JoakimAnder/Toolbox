@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using JoakimAnder.Toolbox.DependencyInjection;
 using JoakimAnder.Toolbox.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 Console.WriteLine("ParallelFanout example: fail-fast with sibling cancellation\n");
 
@@ -47,3 +49,24 @@ static async Task AuditAsync(CancellationToken ct)
     await Task.Delay(50, ct);
     Console.WriteLine("audit: recorded");
 }
+
+// --- DI attributes + source generator demo ---
+Console.WriteLine("\nDI attributes + source generator demo\n");
+
+var services = new ServiceCollection()
+    .AddAttributedServices()
+    .AddAttributedWebServices()
+    .BuildServiceProvider();
+
+Console.WriteLine($"IClock -> {services.GetRequiredService<IClock>().GetType().Name}");
+Console.WriteLine($"keyed 'redis' ICache -> {services.GetRequiredKeyedService<ICache>("redis").GetType().Name}");
+Console.WriteLine($"web IGreeter -> {services.GetRequiredService<IGreeter>().GetType().Name}");
+
+interface IClock { }
+[Singleton(typeof(IClock))] sealed class SystemClock : IClock { }
+
+interface ICache { }
+[Singleton(typeof(ICache), Key = "redis")] sealed class RedisCache : ICache { }
+
+interface IGreeter { }
+[Scoped(typeof(IGreeter), Group = "Web")] sealed class Greeter : IGreeter { }
