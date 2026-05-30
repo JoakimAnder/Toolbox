@@ -37,7 +37,7 @@ threaded into each one. A static `FanOut.WhenAll(op1, op2, …)` is also availab
 (returning a tuple) and `void`, for arities 2–8, plus an
 `IEnumerable<Func<CancellationToken, Task>>` overload for dynamic counts.
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result, DI source generator).
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result).
 
 ### DI registration — attributes + source generator
 
