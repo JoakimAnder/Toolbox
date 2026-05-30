@@ -55,6 +55,18 @@ public class RegistrationTests
     }
 
     [Fact]
+    public void Output_is_stable_when_one_class_carries_multiple_lifetimes()
+    {
+        // Sort must be total even when (Group, ImplementationType, ServiceType, Key) tie —
+        // Lifetime is the final tie-breaker, not insertion order from the flatten step.
+        var a = Generated("[Singleton] [Transient] class X { }");
+        var b = Generated("[Singleton] [Transient] class X { }");
+        Assert.Equal(a, b);
+        Assert.Contains("AddSingleton<global::App.X>()", a);
+        Assert.Contains("AddTransient<global::App.X>()", a);
+    }
+
+    [Fact]
     public void Generated_registrations_compile_clean()
     {
         var outcome = GeneratorTestHelper.Run(Prelude + "interface IClock { } [Singleton(typeof(IClock))] class Clock : IClock { } }");

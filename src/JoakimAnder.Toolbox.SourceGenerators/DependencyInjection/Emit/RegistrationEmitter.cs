@@ -18,6 +18,7 @@ internal static class RegistrationEmitter
             .ThenBy(r => r.ImplementationType, StringComparer.Ordinal)
             .ThenBy(r => r.ServiceType ?? "", StringComparer.Ordinal)
             .ThenBy(r => r.Key ?? "", StringComparer.Ordinal)
+            .ThenBy(r => (int)r.Lifetime)
             .ToList();
 
         var sb = new StringBuilder();
