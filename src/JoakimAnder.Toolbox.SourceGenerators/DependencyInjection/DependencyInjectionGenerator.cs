@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Diagnostics;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Emit;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Model;
 using Microsoft.CodeAnalysis;
@@ -18,22 +19,46 @@ public sealed class DependencyInjectionGenerator : IIncrementalGenerator
         var scoped = Discover(context, AttributeSource.ScopedMetadataName, Lifetime.Scoped, "Scoped");
         var transient = Discover(context, AttributeSource.TransientMetadataName, Lifetime.Transient, "Transient");
 
-        var all = singletons.Collect().Combine(scoped.Collect()).Combine(transient.Collect());
+        var hasServiceCollection = context.CompilationProvider.Select(static (compilation, _) =>
+            compilation.GetTypeByMetadataName("Microsoft.Extensions.DependencyInjection.IServiceCollection") is not null);
+
+        var all = singletons.Collect().Combine(scoped.Collect()).Combine(transient.Collect())
+            .Combine(hasServiceCollection);
 
         context.RegisterSourceOutput(all, static (spc, data) =>
         {
+            var results = data.Left;
+            var hasDi = data.Right;
+
             var registrations = new List<ServiceRegistration>();
-            foreach (var arr in data.Left.Left) registrations.AddRange(arr.AsImmutableArray());
-            foreach (var arr in data.Left.Right) registrations.AddRange(arr.AsImmutableArray());
-            foreach (var arr in data.Right) registrations.AddRange(arr.AsImmutableArray());
+            foreach (var arr in results.Left.Left) Collect(arr, spc, registrations);
+            foreach (var arr in results.Left.Right) Collect(arr, spc, registrations);
+            foreach (var arr in results.Right) Collect(arr, spc, registrations);
 
             if (registrations.Count == 0) return;
+
+            if (!hasDi)
+            {
+                spc.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MissingServiceCollection, location: null));
+                return;
+            }
 
             spc.AddSource(RegistrationEmitter.HintName, RegistrationEmitter.Emit(registrations));
         });
     }
 
-    private static IncrementalValuesProvider<EquatableArray<ServiceRegistration>> Discover(
+    private static void Collect(EquatableArray<RegistrationResult> results, SourceProductionContext spc, List<ServiceRegistration> sink)
+    {
+        foreach (var result in results.AsImmutableArray())
+        {
+            if (result.Diagnostic is { } diagnostic)
+                spc.ReportDiagnostic(diagnostic.ToDiagnostic());
+            else if (result.Registration is { } registration)
+                sink.Add(registration);
+        }
+    }
+
+    private static IncrementalValuesProvider<EquatableArray<RegistrationResult>> Discover(
         IncrementalGeneratorInitializationContext context, string metadataName, Lifetime lifetime, string trackingName) =>
         context.SyntaxProvider
             .ForAttributeWithMetadataName(
