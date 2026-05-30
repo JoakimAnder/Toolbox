@@ -17,26 +17,35 @@ public readonly struct Result<TError> where TError : notnull
     private readonly byte _state;
     private readonly TError? _error;
 
-    private Result(byte state, TError? error)
+    // Sentinel used to select the success constructor without a byte-state parameter.
+    private readonly struct SuccessTag { }
+
+    private Result(SuccessTag _)
     {
-        _state = state;
+        _state = StateSuccess;
+        _error = default;
+    }
+
+    private Result(TError error)
+    {
+        _state = StateFailure;
         _error = error;
     }
 
 #pragma warning disable CA1000 // Do not declare static members on generic types — intentional factory API
     /// <summary>Creates a success result with no payload.</summary>
-    public static Result<TError> Success() => new(StateSuccess, default);
+    public static Result<TError> Success() => new(default(SuccessTag));
 
     /// <summary>Creates a failure result holding <paramref name="error"/>.</summary>
     public static Result<TError> Failure(TError error)
     {
         ArgumentNullException.ThrowIfNull(error);
-        return new Result<TError>(StateFailure, error);
+        return new Result<TError>(error);
     }
 #pragma warning restore CA1000
 
     public static implicit operator Result<TError>(TError error) => Failure(error);
-    public static implicit operator Result<TError>(Failure<TError> failure) => new(StateFailure, failure.Error);
+    public static implicit operator Result<TError>(Failure<TError> failure) => new Result<TError>(failure.Error);
 
     /// <summary>True iff the result is a success.</summary>
     public bool IsSuccess => _state == StateSuccess;
@@ -64,7 +73,7 @@ public readonly struct Result<TError> where TError : notnull
         return false;
     }
 
-    /// <summary>Invokes the matching delegate. Throws on default.</summary>
+    /// <summary>Invokes the matching delegate for the current state. Throws on default.</summary>
     public void Match(Action onSuccess, Action<TError> onFailure)
     {
         ArgumentNullException.ThrowIfNull(onSuccess);

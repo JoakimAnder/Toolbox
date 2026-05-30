@@ -80,6 +80,21 @@ public class ResultOfTErrorTests
         Assert.Null(e);
     }
 
+    [Fact]
+    public void TryGetError_NRT_flow_analysis_pattern_compiles_and_runs()
+    {
+        var r = Result<Err>.Failure(new Err("X", "x"));
+        if (r.TryGetError(out var error))
+        {
+            // error is non-null in this branch (analyzer fact via [NotNullWhen(true)]).
+            Assert.Equal("X", error.Code);
+        }
+        else
+        {
+            Assert.Fail("expected failure branch");
+        }
+    }
+
     // --- Match ---
 
     [Fact]
@@ -133,7 +148,15 @@ public class ResultOfTErrorTests
     {
         var r = Result<Err>.Success();
         r.ThrowIfFailure();
-        r.ThrowIfFailure(_ => new InvalidOperationException("never"));
+    }
+
+    [Fact]
+    public void ThrowIfFailure_with_mapper_on_success_returns_silently_without_invoking_mapper()
+    {
+        var r = Result<Err>.Success();
+        var mapperInvoked = false;
+        r.ThrowIfFailure(_ => { mapperInvoked = true; return new InvalidOperationException("never"); });
+        Assert.False(mapperInvoked);
     }
 
     [Fact]
@@ -176,7 +199,8 @@ public class ResultOfTErrorTests
     public void Default_TryGetError_throws_uninitialized()
     {
         var r = default(Result<Err>);
-        Assert.Throws<InvalidOperationException>(() => r.TryGetError(out _));
+        var ex = Assert.Throws<InvalidOperationException>(() => r.TryGetError(out _));
+        Assert.Equal("Result is uninitialized.", ex.Message);
     }
 
     [Fact]
