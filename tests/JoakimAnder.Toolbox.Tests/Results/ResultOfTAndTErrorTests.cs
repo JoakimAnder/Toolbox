@@ -19,6 +19,17 @@ public class ResultOfTAndTErrorTests
     }
 
     [Fact]
+    public void Success_with_null_value_for_nullable_T_round_trips()
+    {
+        var r = Result<string?, Err>.Success(null);
+
+        Assert.True(r.IsSuccess);
+        Assert.True(r.TryGetValue(out var value, out _));
+        Assert.Null(value);
+        Assert.Null(r.ValueOrThrow());
+    }
+
+    [Fact]
     public void Failure_factory_yields_failure_state()
     {
         var r = Result<int, Err>.Failure(new Err("X", "boom"));

@@ -1,7 +1,7 @@
 namespace JoakimAnder.Toolbox.Results;
 
 /// <summary>
-/// Static helpers for constructing <see cref="Result{TError}"/> and <see cref="Result{T, TError}"/>.
+/// Static helpers for constructing <see cref="Result{T, TError}"/>.
 /// </summary>
 public static partial class Result
 {
@@ -37,7 +37,7 @@ public readonly struct Success<T>
 
 /// <summary>
 /// Carrier for an inferred-type failure value. Construct via <see cref="Result.Failure{TError}(TError)"/>.
-/// Implicitly converts to <see cref="Result{TError}"/> and <see cref="Result{T, TError}"/>.
+/// Implicitly converts to <see cref="Result{T, TError}"/>.
 /// </summary>
 public readonly struct Failure<TError> where TError : notnull
 {
