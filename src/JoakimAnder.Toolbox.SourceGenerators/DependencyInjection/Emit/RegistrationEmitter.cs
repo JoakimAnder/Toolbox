@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Model;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Emit;
 
@@ -64,7 +65,7 @@ internal static class RegistrationEmitter
             ? $"<{reg.ImplementationType}>"
             : $"<{reg.ServiceType}, {reg.ImplementationType}>";
 
-        var args = reg.Key is null ? "" : "\"" + reg.Key.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+        var args = reg.Key is null ? "" : SymbolDisplay.FormatLiteral(reg.Key, quote: true);
 
         return $"services.{method}{typeArgs}({args});";
     }
