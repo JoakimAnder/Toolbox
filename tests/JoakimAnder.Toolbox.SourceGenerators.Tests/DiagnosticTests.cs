@@ -1,3 +1,4 @@
+using System.Linq;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -31,6 +32,15 @@ public class DiagnosticTests
     {
         var outcome = Run("[Scoped] static class Helpers { }");
         Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1002");
+    }
+
+    [Fact]
+    public void Abstract_class_with_repeated_same_lifetime_attribute_reports_TBX1002_once()
+    {
+        // The structural check is per-type, not per-attribute — repeating the same
+        // [Singleton(Key=...)] on a class would otherwise produce N identical errors.
+        var outcome = Run("[Singleton(Key = \"a\")] [Singleton(Key = \"b\")] abstract class Base { }");
+        Assert.Single(outcome.GeneratorDiagnostics.Where(d => d.Id == "TBX1002"));
     }
 
     [Fact]

@@ -10,14 +10,14 @@
     {
       "id": 8,
       "subject": "Task 2: Core discovery and emit (lifetimes, self/mapped, grouping, determinism)",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [7],
       "description": "**Goal:** Discover attributed classes, project them to an equatable model, and emit grouped `AddAttributed*Services` methods for the three lifetimes with self and mapped registration.\n\n**Files:**\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/Lifetime.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/ServiceRegistration.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/EquatableArray.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Parser.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Emit/RegistrationEmitter.cs`\n- Modify: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/DependencyInjectionGenerator.cs`\n- Create: `tests/JoakimAnder.Toolbox.SourceGenerators.Tests/RegistrationTests.cs`\n\n**Acceptance Criteria:**\n- Self and mapped registration emit correct arity\n- All three lifetimes map correctly\n- Groups emit separate methods\n- AllowMultiple registers in each group\n- Output deterministic regardless of order\n- Generated code compiles\n\n**Verify:** `dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests`\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/Lifetime.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/ServiceRegistration.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/EquatableArray.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Parser.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Emit/RegistrationEmitter.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/DependencyInjectionGenerator.cs\", \"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/RegistrationTests.cs\"], \"verifyCommand\": \"dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests\", \"acceptanceCriteria\": [\"Self and mapped registration emit correct arity\", \"All three lifetimes map correctly\", \"Groups emit separate methods\", \"AllowMultiple registers in each group\", \"Output deterministic regardless of order\", \"Generated code compiles\"]}\n```"
     },
     {
       "id": 9,
       "subject": "Task 3: Keyed services",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [8],
       "description": "**Goal:** A `Key` on any attribute emits the matching `AddKeyed*` call with the key as a string-literal argument.\n\n**Files:**\n- Create: `tests/JoakimAnder.Toolbox.SourceGenerators.Tests/KeyedServiceTests.cs`\n\n**Acceptance Criteria:**\n- Keyed mapped emits AddKeyed* with literal\n- Keyed self uses single type arg\n- Keyed respects group\n- Keyed code compiles\n\n**Verify:** `dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests --filter KeyedServiceTests`\n\n```json:metadata\n{\"files\": [\"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/KeyedServiceTests.cs\"], \"verifyCommand\": \"dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests --filter KeyedServiceTests\", \"acceptanceCriteria\": [\"Keyed mapped emits AddKeyed* with literal\", \"Keyed self uses single type arg\", \"Keyed respects group\", \"Keyed code compiles\"]}\n```"
     },
@@ -43,5 +43,5 @@
       "description": "**Goal:** A working example in the examples app plus README and CHANGELOG updates.\n\n**Files:**\n- Modify: `examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj`\n- Modify: `examples/JoakimAnder.Toolbox.Examples/Program.cs`\n- Modify: `README.md`\n- Modify: `CHANGELOG.md`\n\n**Acceptance Criteria:**\n- Example registers, resolves, and prints services incl. grouped + keyed\n- Example runs without error\n- README and CHANGELOG updated\n\n**Verify:** `dotnet run --project examples/JoakimAnder.Toolbox.Examples`\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj\", \"examples/JoakimAnder.Toolbox.Examples/Program.cs\", \"README.md\", \"CHANGELOG.md\"], \"verifyCommand\": \"dotnet run --project examples/JoakimAnder.Toolbox.Examples\", \"acceptanceCriteria\": [\"Example registers, resolves, and prints services incl. grouped + keyed\", \"Example runs without error\", \"README and CHANGELOG updated\"]}\n```"
     }
   ],
-  "lastUpdated": "2026-05-30T12:00:00Z"
+  "lastUpdated": "2026-05-30T14:00:00Z"
 }

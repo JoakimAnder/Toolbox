@@ -13,18 +13,22 @@ internal static class Parser
         var implementation = (INamedTypeSymbol)context.TargetSymbol;
         var implName = implementation.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
+        // Per-type checks: emit once at the class declaration regardless of attribute count.
+        if (implementation.IsAbstract || implementation.IsStatic)
+        {
+            var classLocation = LocationInfo.From(implementation.DeclaringSyntaxReferences.IsDefaultOrEmpty
+                ? null
+                : implementation.DeclaringSyntaxReferences[0].GetSyntax());
+            return new EquatableArray<RegistrationResult>(ImmutableArray.Create(
+                RegistrationResult.Error(new DiagnosticInfo(
+                    DiagnosticDescriptors.NotConstructible, classLocation,
+                    new EquatableArray<string>(ImmutableArray.Create(implName))))));
+        }
+
         var builder = ImmutableArray.CreateBuilder<RegistrationResult>(context.Attributes.Length);
         foreach (var attribute in context.Attributes)
         {
             var location = LocationInfo.From(attribute.ApplicationSyntaxReference?.GetSyntax());
-
-            if (implementation.IsAbstract || implementation.IsStatic)
-            {
-                builder.Add(RegistrationResult.Error(new DiagnosticInfo(
-                    DiagnosticDescriptors.NotConstructible, location,
-                    new EquatableArray<string>(ImmutableArray.Create(implName)))));
-                continue;
-            }
 
             INamedTypeSymbol? serviceSymbol = null;
             if (attribute.ConstructorArguments.Length > 0 &&
