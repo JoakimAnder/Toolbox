@@ -167,6 +167,55 @@ public class TaskResultExtensionsTests
     }
 
     [Fact]
+    public async Task Void_BindAsync_to_void_propagates_failure_without_invoking_next()
+    {
+        var invoked = false;
+        var r = await VoidFailAsync("X").BindAsync(() =>
+        {
+            invoked = true;
+            return Task.FromResult(Result<Err>.Success());
+        });
+
+        Assert.False(invoked);
+        Assert.True(r.TryGetError(out var e));
+        Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
+    public async Task Void_BindAsync_to_typed_propagates_failure_without_invoking_next()
+    {
+        var invoked = false;
+        var r = await VoidFailAsync("X").BindAsync<int, Err>(() =>
+        {
+            invoked = true;
+            return Task.FromResult(Result<int, Err>.Success(1));
+        });
+
+        Assert.False(invoked);
+        Assert.True(r.TryGetError(out var e));
+        Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
+    public async Task Void_Bind_to_void_propagates_failure_without_invoking_next()
+    {
+        var invoked = false;
+        var r = await VoidFailAsync("X").Bind(() => { invoked = true; return Result<Err>.Success(); });
+
+        Assert.False(invoked);
+        Assert.True(r.TryGetError(out var e));
+        Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
+    public async Task Void_Bind_to_typed_propagates_failure()
+    {
+        var r = await VoidFailAsync("X").Bind(() => Result<int, Err>.Success(42));
+        Assert.True(r.TryGetError(out var e));
+        Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
     public async Task Void_Match_async_returns_onSuccess_result()
     {
         var got = await VoidOkAsync().Match(() => "ok", _ => "bad");
@@ -174,10 +223,33 @@ public class TaskResultExtensionsTests
     }
 
     [Fact]
+    public async Task Void_MatchAsync_runs_onSuccess_branch()
+    {
+        var got = await VoidOkAsync()
+            .MatchAsync(() => Task.FromResult("ok"), _ => Task.FromResult("bad"));
+        Assert.Equal("ok", got);
+    }
+
+    [Fact]
+    public async Task Void_MatchAsync_runs_onFailure_branch()
+    {
+        var got = await VoidFailAsync("X")
+            .MatchAsync(() => Task.FromResult("ok"), e => Task.FromResult(e.Code));
+        Assert.Equal("X", got);
+    }
+
+    [Fact]
     public async Task ThrowIfFailureAsync_on_success_returns_silently()
     {
         await VoidOkAsync().ThrowIfFailureAsync();
-        await VoidOkAsync().ThrowIfFailureAsync(_ => new InvalidOperationException());
+    }
+
+    [Fact]
+    public async Task ThrowIfFailureAsync_with_mapper_on_success_returns_silently_without_invoking_mapper()
+    {
+        var invoked = false;
+        await VoidOkAsync().ThrowIfFailureAsync(_ => { invoked = true; return new InvalidOperationException("never"); });
+        Assert.False(invoked);
     }
 
     [Fact]
