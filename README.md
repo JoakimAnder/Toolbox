@@ -37,7 +37,37 @@ threaded into each one. A static `FanOut.WhenAll(op1, op2, …)` is also availab
 (returning a tuple) and `void`, for arities 2–8, plus an
 `IEnumerable<Func<CancellationToken, Task>>` overload for dynamic counts.
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the rest of the planned features (Result).
+### Result — `JoakimAnder.Toolbox.Results.Result<T, TError>` / `Result<TError>`
+
+A typed success/failure container for the boundaries of your code. Producers return values
+via implicit conversions; consumers read via `Match` or `TryGetValue` — never via loose
+`Value` / `Error` properties.
+
+```csharp
+using JoakimAnder.Toolbox.Results;
+
+public Task<Result<UserSummary, ApiError>> GetUserSummaryAsync(int id, CancellationToken ct) =>
+    Result.TryAsync(
+        async c => new UserSummary(await _users.GetAsync(id, c), await _orders.CountAsync(id, c)),
+        ex => ex switch
+        {
+            KeyNotFoundException k  => (ApiError)new ApiError.NotFound(k.Message),
+            HttpRequestException h  => new ApiError.Upstream(h.Message),
+            _                       => new ApiError.Unexpected(ex.Message)
+        },
+        ct);
+```
+
+The caller defines `ApiError` (typically a sealed-record discriminated union) so the
+boundary handler can `switch` on it exhaustively at compile time. `Map` / `MapError` /
+`Bind` compose Result-returning calls — sync and async — and `Result.Try` / `ValueOrThrow`
+provide explicit interop with throwing code (`OperationCanceledException` is always
+rethrown so cancellation stays cancellation).
+
+A void-success variant `Result<TError>` mirrors the typed one for commands that succeed
+without a payload.
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the project roadmap.
 
 ### DI registration — attributes + source generator
 
