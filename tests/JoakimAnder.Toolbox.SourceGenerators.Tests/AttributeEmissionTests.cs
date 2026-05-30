@@ -26,4 +26,11 @@ public class AttributeEmissionTests
         var outcome = GeneratorTestHelper.Run("// empty");
         Assert.Empty(outcome.CompileErrors);
     }
+
+    [Fact]
+    public void No_extensions_file_emitted_when_nothing_is_attributed()
+    {
+        var outcome = GeneratorTestHelper.Run("// empty");
+        Assert.False(outcome.HasGeneratedSource("AttributedServices.g.cs"));
+    }
 }

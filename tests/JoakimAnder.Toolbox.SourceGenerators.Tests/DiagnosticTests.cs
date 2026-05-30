@@ -44,6 +44,15 @@ public class DiagnosticTests
     }
 
     [Fact]
+    public void Abstract_class_with_attributes_of_different_lifetimes_reports_TBX1002_once()
+    {
+        // Each FAWMN provider runs the transform independently — without cross-provider
+        // dedup in the pipeline, this would emit TBX1002 twice (once per provider).
+        var outcome = Run("[Singleton] [Scoped] abstract class Base { }");
+        Assert.Single(outcome.GeneratorDiagnostics.Where(d => d.Id == "TBX1002"));
+    }
+
+    [Fact]
     public void Invalid_group_identifier_reports_TBX1003()
     {
         var outcome = Run("[Scoped(Group = \"not valid\")] class A { }");

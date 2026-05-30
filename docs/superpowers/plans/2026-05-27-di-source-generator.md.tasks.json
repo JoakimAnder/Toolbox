@@ -24,24 +24,24 @@
     {
       "id": 10,
       "subject": "Task 4: Diagnostics TBX1001-TBX1004",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [9],
       "description": "**Goal:** Report `TBX1001` (service type not assignable), `TBX1002` (abstract/static implementation), `TBX1003` (invalid group identifier), and `TBX1004` (no `IServiceCollection` reference), skipping the offending registration rather than cascading into `CS` errors.\n\n**Files:**\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/LocationInfo.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/DiagnosticInfo.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/RegistrationResult.cs`\n- Create: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Diagnostics/DiagnosticDescriptors.cs`\n- Modify: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Parser.cs`\n- Modify: `src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/DependencyInjectionGenerator.cs`\n- Create: `tests/JoakimAnder.Toolbox.SourceGenerators.Tests/DiagnosticTests.cs`\n\n**Acceptance Criteria:**\n- TBX1001 on non-assignable type\n- TBX1002 on abstract/static\n- TBX1003 on invalid group\n- TBX1004 when DI not referenced\n- Valid sibling still registers\n\n**Verify:** `dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests --filter DiagnosticTests`\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/LocationInfo.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/DiagnosticInfo.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Model/RegistrationResult.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Diagnostics/DiagnosticDescriptors.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/Parser.cs\", \"src/JoakimAnder.Toolbox.SourceGenerators/DependencyInjection/DependencyInjectionGenerator.cs\", \"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/DiagnosticTests.cs\"], \"verifyCommand\": \"dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests\", \"acceptanceCriteria\": [\"TBX1001 on non-assignable type\", \"TBX1002 on abstract/static\", \"TBX1003 on invalid group\", \"TBX1004 when DI not referenced\", \"Valid sibling still registers\"]}\n```"
     },
     {
       "id": 11,
       "subject": "Task 5: Incremental caching regression test",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [10],
       "description": "**Goal:** Prove the generator caches correctly — an unrelated source edit must not re-run the discovery transforms.\n\n**Files:**\n- Create: `tests/JoakimAnder.Toolbox.SourceGenerators.Tests/CachingTests.cs`\n\n**Acceptance Criteria:**\n- Discovery steps report Cached/Unchanged after an unrelated edit\n\n**Verify:** `dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests --filter CachingTests`\n\n```json:metadata\n{\"files\": [\"tests/JoakimAnder.Toolbox.SourceGenerators.Tests/CachingTests.cs\"], \"verifyCommand\": \"dotnet test tests/JoakimAnder.Toolbox.SourceGenerators.Tests --filter CachingTests\", \"acceptanceCriteria\": [\"Discovery steps report Cached/Unchanged after an unrelated edit\"]}\n```"
     },
     {
       "id": 12,
       "subject": "Task 6: Runnable example and documentation",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [11],
       "description": "**Goal:** A working example in the examples app plus README and CHANGELOG updates.\n\n**Files:**\n- Modify: `examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj`\n- Modify: `examples/JoakimAnder.Toolbox.Examples/Program.cs`\n- Modify: `README.md`\n- Modify: `CHANGELOG.md`\n\n**Acceptance Criteria:**\n- Example registers, resolves, and prints services incl. grouped + keyed\n- Example runs without error\n- README and CHANGELOG updated\n\n**Verify:** `dotnet run --project examples/JoakimAnder.Toolbox.Examples`\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples/JoakimAnder.Toolbox.Examples.csproj\", \"examples/JoakimAnder.Toolbox.Examples/Program.cs\", \"README.md\", \"CHANGELOG.md\"], \"verifyCommand\": \"dotnet run --project examples/JoakimAnder.Toolbox.Examples\", \"acceptanceCriteria\": [\"Example registers, resolves, and prints services incl. grouped + keyed\", \"Example runs without error\", \"README and CHANGELOG updated\"]}\n```"
     }
   ],
-  "lastUpdated": "2026-05-30T14:00:00Z"
+  "lastUpdated": "2026-05-30T17:00:00Z"
 }

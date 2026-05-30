@@ -31,9 +31,14 @@ public sealed class DependencyInjectionGenerator : IIncrementalGenerator
             var hasDi = data.Right;
 
             var registrations = new List<ServiceRegistration>();
-            foreach (var arr in results.Left.Left) Collect(arr, spc, registrations);
-            foreach (var arr in results.Left.Right) Collect(arr, spc, registrations);
-            foreach (var arr in results.Right) Collect(arr, spc, registrations);
+            // Dedup across providers — TBX1002 (abstract/static) is per-class, so the same
+            // type's diagnostic fires once per FAWMN provider it appears in. DiagnosticInfo
+            // value-equality covers it because TBX1002's LocationInfo points at the class
+            // declaration (the same syntax node from each provider's perspective).
+            var reported = new HashSet<DiagnosticInfo>();
+            foreach (var arr in results.Left.Left) Collect(arr, spc, registrations, reported);
+            foreach (var arr in results.Left.Right) Collect(arr, spc, registrations, reported);
+            foreach (var arr in results.Right) Collect(arr, spc, registrations, reported);
 
             if (registrations.Count == 0) return;
 
@@ -47,12 +52,19 @@ public sealed class DependencyInjectionGenerator : IIncrementalGenerator
         });
     }
 
-    private static void Collect(EquatableArray<RegistrationResult> results, SourceProductionContext spc, List<ServiceRegistration> sink)
+    private static void Collect(
+        EquatableArray<RegistrationResult> results,
+        SourceProductionContext spc,
+        List<ServiceRegistration> sink,
+        HashSet<DiagnosticInfo> reported)
     {
         foreach (var result in results.AsImmutableArray())
         {
             if (result.Diagnostic is { } diagnostic)
-                spc.ReportDiagnostic(diagnostic.ToDiagnostic());
+            {
+                if (reported.Add(diagnostic))
+                    spc.ReportDiagnostic(diagnostic.ToDiagnostic());
+            }
             else if (result.Registration is { } registration)
                 sink.Add(registration);
         }
