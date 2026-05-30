@@ -15,7 +15,7 @@ public static partial class Result
 
     /// <summary>
     /// Returns an inferred-type failure carrier that implicitly converts to
-    /// <see cref="Result{TError}"/> or <see cref="Result{T, TError}"/>.
+    /// <see cref="Result{T, TError}"/>.
     /// Use this when the bare implicit conversion from <typeparamref name="TError"/> is ambiguous.
     /// </summary>
     public static Failure<TError> Failure<TError>(TError error) where TError : notnull
