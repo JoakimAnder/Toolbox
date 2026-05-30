@@ -1,0 +1,61 @@
+{
+  "planPath": "docs/superpowers/plans/2026-05-30-result.md",
+  "tasks": [
+    {
+      "id": 9,
+      "subject": "Result Task 1: Result<T, TError> core + carriers + Result scaffold",
+      "status": "pending",
+      "description": "**Goal:** The typed Result struct (state, factories, all four implicit conversions, state inspection, TryGet*, Match, ValueOrThrow) plus the static Result class shell and Success<T>/Failure<TError> carrier structs. No operators yet.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Results/Result.cs\n- Create: src/JoakimAnder.Toolbox/Results/ResultOfTAndTError.cs\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/ResultOfTAndTErrorTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~ResultOfTAndTErrorTests\" && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Results/Result.cs\", \"src/JoakimAnder.Toolbox/Results/ResultOfTAndTError.cs\", \"tests/JoakimAnder.Toolbox.Tests/Results/ResultOfTAndTErrorTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~ResultOfTAndTErrorTests\\\" && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Result Task 2: Result<TError> void-success variant",
+      "status": "pending",
+      "blockedBy": [9],
+      "description": "**Goal:** The void-success Result struct, mirroring the typed variant but without the value side. Includes factories, conversions, IsSuccess/IsFailure/IsDefault, TryGetError, Match, ThrowIfFailure.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Results/ResultOfTError.cs\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/ResultOfTErrorTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~ResultOfTErrorTests\" && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Results/ResultOfTError.cs\", \"tests/JoakimAnder.Toolbox.Tests/Results/ResultOfTErrorTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~ResultOfTErrorTests\\\" && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Result Task 3: Composition operators — Map, MapError, Bind (sync)",
+      "status": "pending",
+      "blockedBy": [10],
+      "description": "**Goal:** Add Map, MapError, and Bind to Result<T, TError>, and MapError and Bind to Result<TError>. Includes cross-type Bind overloads (typed↔void). Sync only.\n\n**Files:**\n- Modify: src/JoakimAnder.Toolbox/Results/ResultOfTAndTError.cs\n- Modify: src/JoakimAnder.Toolbox/Results/ResultOfTError.cs\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/ResultOperatorsTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~ResultOperatorsTests\" && dotnet test && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Results/ResultOfTAndTError.cs\", \"src/JoakimAnder.Toolbox/Results/ResultOfTError.cs\", \"tests/JoakimAnder.Toolbox.Tests/Results/ResultOperatorsTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~ResultOperatorsTests\\\" && dotnet test && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 12,
+      "subject": "Result Task 4: Result.Try and Result.TryAsync exception interop",
+      "status": "pending",
+      "blockedBy": [11],
+      "description": "**Goal:** Bidirectional exception interop — catch-and-map at boundaries. Four overloads (sync typed, sync void, async typed, async void). Catches every Exception except OperationCanceledException (rethrown unchanged).\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Results/Result.Try.cs\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/ResultTryTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~ResultTryTests\" && dotnet test && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Results/Result.Try.cs\", \"tests/JoakimAnder.Toolbox.Tests/Results/ResultTryTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~ResultTryTests\\\" && dotnet test && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 13,
+      "subject": "Result Task 5: TaskResultExtensions — async surface over Task<Result<...>>",
+      "status": "pending",
+      "blockedBy": [12],
+      "description": "**Goal:** Extension methods on Task<Result<T, TError>> and Task<Result<TError>> so chains compose naturally across await boundaries. Each extension awaits with ConfigureAwait(false) and delegates to the sync operator.\n\n**Files:**\n- Create: src/JoakimAnder.Toolbox/Results/TaskResultExtensions.cs\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/TaskResultExtensionsTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~TaskResultExtensionsTests\" && dotnet test && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"src/JoakimAnder.Toolbox/Results/TaskResultExtensions.cs\", \"tests/JoakimAnder.Toolbox.Tests/Results/TaskResultExtensionsTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~TaskResultExtensionsTests\\\" && dotnet test && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 14,
+      "subject": "Result Task 6: FanOut composition tests",
+      "status": "pending",
+      "blockedBy": [13],
+      "description": "**Goal:** Behavioral tests for the two documented composition patterns with FanOut. Pattern 1: wrap FanOut with Result.TryAsync. Pattern 2: per-op Results collapsed with Bind, including the documented limitation that FanOut does not fail-fast on Result-failures.\n\n**Files:**\n- Create: tests/JoakimAnder.Toolbox.Tests/Results/FanOutCompositionTests.cs\n\n**Verify:** dotnet test --filter \"FullyQualifiedName~FanOutCompositionTests\" && dotnet test\n\n```json:metadata\n{\"files\": [\"tests/JoakimAnder.Toolbox.Tests/Results/FanOutCompositionTests.cs\"], \"verifyCommand\": \"dotnet test --filter \\\"FullyQualifiedName~FanOutCompositionTests\\\" && dotnet test\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 15,
+      "subject": "Result Task 7: Example program — boundary + FanOut pattern 1",
+      "status": "pending",
+      "blockedBy": [14],
+      "description": "**Goal:** Runnable example showing the end-to-end 'explicit failure flow at boundaries' story: a boundary method calling two async deps via FanOut, wrapped with Result.TryAsync, mapping thrown exceptions into a sealed-record ApiError DU, and a handler switching exhaustively.\n\n**Files:**\n- Modify: examples/JoakimAnder.Toolbox.Examples/Program.cs\n\n**Verify:** dotnet run --project examples/JoakimAnder.Toolbox.Examples && dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples/Program.cs\"], \"verifyCommand\": \"dotnet run --project examples/JoakimAnder.Toolbox.Examples && dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    },
+    {
+      "id": 16,
+      "subject": "Result Task 8: README, CHANGELOG, and ROADMAP updates",
+      "status": "pending",
+      "blockedBy": [15],
+      "description": "**Goal:** Document the Result feature in README ('What's in the box'), add a CHANGELOG entry under [Unreleased], and mark the Result sub-project complete in ROADMAP.\n\n**Files:**\n- Modify: README.md\n- Modify: CHANGELOG.md\n- Modify: docs/ROADMAP.md\n\n**Verify:** dotnet build -c Release && dotnet test && dotnet run --project examples/JoakimAnder.Toolbox.Examples\n\n```json:metadata\n{\"files\": [\"README.md\", \"CHANGELOG.md\", \"docs/ROADMAP.md\"], \"verifyCommand\": \"dotnet build -c Release && dotnet test && dotnet run --project examples/JoakimAnder.Toolbox.Examples\", \"plan\": \"docs/superpowers/plans/2026-05-30-result.md\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-05-30"
+}
