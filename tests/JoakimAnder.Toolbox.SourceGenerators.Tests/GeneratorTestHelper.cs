@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection;
@@ -33,22 +34,32 @@ internal static class GeneratorTestHelper
             generators: new[] { new DependencyInjectionGenerator().AsSourceGenerator() },
             driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true));
 
-        var ran = driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out _);
+        var updatedDriver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out _);
 
-        var compileErrors = output.GetDiagnostics()
+        var compileErrors = outputCompilation.GetDiagnostics()
             .Where(d => d.Severity == DiagnosticSeverity.Error)
             .ToImmutableArray();
 
-        return new GeneratorOutcome(ran.GetRunResult(), ran.GetRunResult().Diagnostics, compileErrors);
+        var runResult = updatedDriver.GetRunResult();
+        return new GeneratorOutcome(runResult, runResult.Diagnostics, compileErrors);
     }
 
-    public static CSharpCompilation CreateCompilation(string source)
+    public static CSharpCompilation CreateCompilation(string source, IEnumerable<MetadataReference>? extraReferences = null)
     {
-        var references = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-            .Select(a => (MetadataReference)MetadataReference.CreateFromFile(a.Location))
-            .Append(MetadataReference.CreateFromFile(typeof(IServiceCollection).Assembly.Location))
-            .Distinct();
+        var coreDir = System.IO.Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+        MetadataReference[] coreReferences =
+        {
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+            MetadataReference.CreateFromFile(System.IO.Path.Combine(coreDir, "System.Runtime.dll")),
+            MetadataReference.CreateFromFile(System.IO.Path.Combine(coreDir, "netstandard.dll")),
+            MetadataReference.CreateFromFile(System.IO.Path.Combine(coreDir, "System.Collections.dll")),
+        };
+
+        var diReference = MetadataReference.CreateFromFile(typeof(IServiceCollection).Assembly.Location);
+
+        var references = extraReferences is null
+            ? coreReferences.Append(diReference)
+            : coreReferences.Concat(extraReferences);
 
         return CSharpCompilation.Create(
             assemblyName: "Tests.Generated",
