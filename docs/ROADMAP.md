@@ -26,9 +26,9 @@ GitHub Actions workflows for build, test, and NuGet publishing.
 **Depends on:** Foundation.
 
 ### 3. Result class
-A `Result<T>` / `Result<T, TError>` type for explicit success/failure flow.
+A `Result<TError>` / `Result<T, TError>` type for explicit success/failure flow at boundaries.
 
-**Status:** Not started.
+**Status:** Complete. Spec: [2026-05-30-result-design.md](superpowers/specs/2026-05-30-result-design.md), plan: [2026-05-30-result.md](superpowers/plans/2026-05-30-result.md).
 **Depends on:** Foundation.
 
 ### 4. ParallelFanout class
@@ -52,4 +52,4 @@ Foundation → CI/CD → features (Result / ParallelFanout / DI source generator
 
 Features could in principle be parallelized, but in practice will be done sequentially.
 
-**Done so far:** Foundation, CI/CD, ParallelFanout, DI source generator. **Remaining:** Result.
+**Done so far:** Foundation, CI/CD, ParallelFanout, DI source generator, Result. **Remaining:** none — all roadmap sub-projects complete.
