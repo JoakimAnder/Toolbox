@@ -160,6 +160,46 @@ public readonly struct Result<T, TError> where TError : notnull
         throw ex;
     }
 
+    /// <summary>Transforms the success value; passes the failure through unchanged.</summary>
+    public Result<TResult, TError> Map<TResult>(Func<T, TResult> map)
+    {
+        ArgumentNullException.ThrowIfNull(map);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? Result<TResult, TError>.Success(map(_value!))
+            : Result<TResult, TError>.Failure(_error!);
+    }
+
+    /// <summary>Transforms the failure value; passes the success through unchanged.</summary>
+    public Result<T, TNewError> MapError<TNewError>(Func<TError, TNewError> map) where TNewError : notnull
+    {
+        ArgumentNullException.ThrowIfNull(map);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? Result<T, TNewError>.Success(_value!)
+            : Result<T, TNewError>.Failure(map(_error!));
+    }
+
+    /// <summary>Chains a Result-returning step; failure short-circuits.</summary>
+    public Result<TResult, TError> Bind<TResult>(Func<T, Result<TResult, TError>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? next(_value!)
+            : Result<TResult, TError>.Failure(_error!);
+    }
+
+    /// <summary>Chains a void-Result-returning step; failure short-circuits.</summary>
+    public Result<TError> Bind(Func<T, Result<TError>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? next(_value!)
+            : Result<TError>.Failure(_error!);
+    }
+
     private void ThrowIfUninitialized()
     {
         if (_state == StateUninitialized)

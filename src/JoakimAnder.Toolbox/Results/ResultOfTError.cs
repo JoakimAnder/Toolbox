@@ -137,6 +137,34 @@ public readonly struct Result<TError> where TError : notnull
         throw ex;
     }
 
+    /// <summary>Transforms the failure value; passes the success through unchanged.</summary>
+    public Result<TNewError> MapError<TNewError>(Func<TError, TNewError> map) where TNewError : notnull
+    {
+        ArgumentNullException.ThrowIfNull(map);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? Result<TNewError>.Success()
+            : Result<TNewError>.Failure(map(_error!));
+    }
+
+    /// <summary>Chains a void-Result-returning step; failure short-circuits.</summary>
+    public Result<TError> Bind(Func<Result<TError>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+        ThrowIfUninitialized();
+        return _state == StateSuccess ? next() : this;
+    }
+
+    /// <summary>Chains a typed-Result-returning step; failure short-circuits.</summary>
+    public Result<T, TError> Bind<T>(Func<Result<T, TError>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+        ThrowIfUninitialized();
+        return _state == StateSuccess
+            ? next()
+            : Result<T, TError>.Failure(_error!);
+    }
+
     private void ThrowIfUninitialized()
     {
         if (_state == StateUninitialized)
