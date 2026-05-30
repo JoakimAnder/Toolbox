@@ -43,7 +43,7 @@ Attributes that mark services for DI registration, plus a source generator that 
 - Largest unknown — source generator complexity
 - Exercises the source-generators project layout decided in Foundation
 
-**Status:** Not started.
+**Status:** Complete. Spec: [2026-05-27-di-source-generator-design.md](superpowers/specs/2026-05-27-di-source-generator-design.md), plan: [2026-05-27-di-source-generator.md](superpowers/plans/2026-05-27-di-source-generator.md).
 **Depends on:** Foundation.
 
 ## Order
@@ -52,4 +52,4 @@ Foundation → CI/CD → features (Result / ParallelFanout / DI source generator
 
 Features could in principle be parallelized, but in practice will be done sequentially.
 
-**Done so far:** Foundation, CI/CD, ParallelFanout. **Remaining:** Result, DI source generator.
+**Done so far:** Foundation, CI/CD, ParallelFanout, DI source generator. **Remaining:** Result.
