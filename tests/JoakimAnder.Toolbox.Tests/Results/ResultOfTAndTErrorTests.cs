@@ -201,6 +201,18 @@ public class ResultOfTAndTErrorTests
     }
 
     [Fact]
+    public void ValueOrThrow_with_mapper_on_success_returns_value_without_invoking_mapper()
+    {
+        var mapperInvoked = false;
+        var r = Result<int, Err>.Success(99);
+
+        var got = r.ValueOrThrow(_ => { mapperInvoked = true; return new InvalidOperationException("never"); });
+
+        Assert.Equal(99, got);
+        Assert.False(mapperInvoked);
+    }
+
+    [Fact]
     public void ValueOrThrow_on_failure_throws_InvalidOperationException_with_error_in_message()
     {
         var r = Result<int, Err>.Failure(new Err("X", "boom"));

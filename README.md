@@ -52,7 +52,7 @@ public Task<Result<UserSummary, ApiError>> GetUserSummaryAsync(int id, Cancellat
         ex => ex switch
         {
             KeyNotFoundException k  => (ApiError)new ApiError.NotFound(k.Message),
-            HttpRequestException h  => new ApiError.Upstream(h.Message),
+            HttpRequestException h  => new ApiError.Upstream(nameof(HttpRequestException), h.Message),
             _                       => new ApiError.Unexpected(ex.Message)
         },
         ct);
