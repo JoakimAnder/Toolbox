@@ -156,13 +156,13 @@ public readonly struct Result<TError> where TError : notnull
     }
 
     /// <summary>Chains a typed-Result-returning step; failure short-circuits.</summary>
-    public Result<T, TError> Bind<T>(Func<Result<T, TError>> next)
+    public Result<TResult, TError> Bind<TResult>(Func<Result<TResult, TError>> next)
     {
         ArgumentNullException.ThrowIfNull(next);
         ThrowIfUninitialized();
         return _state == StateSuccess
             ? next()
-            : Result<T, TError>.Failure(_error!);
+            : Result<TResult, TError>.Failure(_error!);
     }
 
     private void ThrowIfUninitialized()

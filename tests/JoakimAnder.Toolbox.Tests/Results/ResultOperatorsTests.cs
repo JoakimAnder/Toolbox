@@ -78,7 +78,7 @@ public class ResultOperatorsTests
         Assert.Throws<InvalidOperationException>(() => r.MapError(e => new MappedErr(e.Code)));
     }
 
-    // --- Result<T, TError>.Bind<U> ---
+    // --- Result<T, TError>.Bind<TResult> ---
 
     [Fact]
     public void Bind_on_success_invokes_next_and_returns_its_result()
@@ -131,10 +131,21 @@ public class ResultOperatorsTests
     [Fact]
     public void Bind_to_void_on_failure_propagates_error()
     {
-        var r = Result<int, Err>.Failure(new Err("X", "x")).Bind(_ => Result<Err>.Success());
+        var invoked = false;
+        var r = Result<int, Err>.Failure(new Err("X", "x"))
+            .Bind(_ => { invoked = true; return Result<Err>.Success(); });
+
+        Assert.False(invoked);
         Assert.True(r.IsFailure);
         Assert.True(r.TryGetError(out var e));
         Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
+    public void Bind_to_void_on_default_throws_uninitialized()
+    {
+        var r = default(Result<int, Err>);
+        Assert.Throws<InvalidOperationException>(() => r.Bind(_ => Result<Err>.Success()));
     }
 
     // --- Result<TError>.MapError ---
@@ -153,6 +164,13 @@ public class ResultOperatorsTests
     {
         var r = Result<Err>.Success().MapError(e => new MappedErr(e.Code));
         Assert.True(r.IsSuccess);
+    }
+
+    [Fact]
+    public void Void_MapError_on_default_throws_uninitialized()
+    {
+        var r = default(Result<Err>);
+        Assert.Throws<InvalidOperationException>(() => r.MapError(e => new MappedErr(e.Code)));
     }
 
     // --- Result<TError>.Bind ---
@@ -177,6 +195,13 @@ public class ResultOperatorsTests
     }
 
     [Fact]
+    public void Void_Bind_to_void_on_default_throws_uninitialized()
+    {
+        var r = default(Result<Err>);
+        Assert.Throws<InvalidOperationException>(() => r.Bind(() => Result<Err>.Success()));
+    }
+
+    [Fact]
     public void Void_Bind_to_typed_on_success_invokes_next()
     {
         var r = Result<Err>.Success().Bind(() => Result<int, Err>.Success(42));
@@ -192,6 +217,13 @@ public class ResultOperatorsTests
         Assert.True(r.IsFailure);
         Assert.True(r.TryGetError(out var e));
         Assert.Equal("X", e.Code);
+    }
+
+    [Fact]
+    public void Void_Bind_to_typed_on_default_throws_uninitialized()
+    {
+        var r = default(Result<Err>);
+        Assert.Throws<InvalidOperationException>(() => r.Bind(() => Result<int, Err>.Success(1)));
     }
 
     // --- Null-delegate guards ---
