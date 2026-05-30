@@ -1,7 +1,7 @@
 namespace JoakimAnder.Toolbox.Results;
 
 /// <summary>
-/// Static helpers for constructing <see cref="Result{T, TError}"/>.
+/// Static helpers for constructing <see cref="Result{T, TError}"/> and <see cref="Result{TError}"/>.
 /// </summary>
 public static partial class Result
 {
@@ -15,7 +15,7 @@ public static partial class Result
 
     /// <summary>
     /// Returns an inferred-type failure carrier that implicitly converts to
-    /// <see cref="Result{T, TError}"/>.
+    /// <see cref="Result{T, TError}"/> or <see cref="Result{TError}"/>.
     /// Use this when the bare implicit conversion from <typeparamref name="TError"/> is ambiguous.
     /// </summary>
     public static Failure<TError> Failure<TError>(TError error) where TError : notnull
@@ -37,7 +37,7 @@ public readonly struct Success<T>
 
 /// <summary>
 /// Carrier for an inferred-type failure value. Construct via <see cref="Result.Failure{TError}(TError)"/>.
-/// Implicitly converts to <see cref="Result{T, TError}"/>.
+/// Implicitly converts to <see cref="Result{T, TError}"/> and <see cref="Result{TError}"/>.
 /// </summary>
 public readonly struct Failure<TError> where TError : notnull
 {
