@@ -142,9 +142,8 @@ public class ResultTryTests
             ex => new Err("X", ex.Message),
             cts.Token);
 
-        // The action's token is the *linked* token, but should reflect the outer cts.
-        // We at least verify that the action received a usable token and that the
-        // outer token's cancellation reaches it.
+        // The action receives the exact token passed in (no internal CTS is created),
+        // so cancelling the outer cts is observable through `seen`.
         Assert.False(seen.IsCancellationRequested);
         cts.Cancel();
         Assert.True(seen.IsCancellationRequested);

@@ -54,8 +54,9 @@ public static partial class Result
     }
 
     /// <summary>
-    /// Awaits <paramref name="action"/> with a linked cancellation token. Maps any non-OCE
-    /// exception to a typed error; rethrows <see cref="OperationCanceledException"/> unchanged.
+    /// Awaits <paramref name="action"/>, forwarding <paramref name="cancellationToken"/>
+    /// straight through to the delegate. Maps any non-OCE exception to a typed error;
+    /// rethrows <see cref="OperationCanceledException"/> unchanged.
     /// </summary>
     public static async Task<Result<T, TError>> TryAsync<T, TError>(
         Func<CancellationToken, Task<T>> action,
@@ -80,7 +81,10 @@ public static partial class Result
         }
     }
 
-    /// <summary>Void variant of the async <c>TryAsync</c>.</summary>
+    /// <summary>
+    /// Void variant of the async <see cref="TryAsync{T, TError}(Func{CancellationToken, Task{T}}, Func{Exception, TError}, CancellationToken)"/>.
+    /// Forwards <paramref name="cancellationToken"/> straight through to the delegate.
+    /// </summary>
     public static async Task<Result<TError>> TryAsync<TError>(
         Func<CancellationToken, Task> action,
         Func<Exception, TError> onException,
