@@ -20,3 +20,10 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Example project using 'Shared' as a conventional folder/namespace name; not consumed from VB.NET.",
     Scope = "namespace",
     Target = "~N:JoakimAnder.Toolbox.Examples.WebApi.Shared.Endpoints")]
+
+[assembly: SuppressMessage(
+    "Naming",
+    "CA1716:Identifiers should not match keywords",
+    Justification = "Example project using 'Shared' as a conventional folder/namespace name; not consumed from VB.NET.",
+    Scope = "namespace",
+    Target = "~N:JoakimAnder.Toolbox.Examples.WebApi.Shared.Repositories")]
