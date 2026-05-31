@@ -88,6 +88,22 @@ Omit the service type to register the concrete type itself. Use `Group = "..."` 
 separate `AddAttributed<Group>Services()` method, and `Key = "..."` for keyed services. The
 attributes are generated into your assembly, so there is no extra runtime dependency.
 
+### Web API example — `examples/JoakimAnder.Toolbox.Examples.WebApi`
+
+A small ASP.NET Core Minimal-API project showing all three Toolbox features
+composed in a realistic shape — vertical-slice handlers that return
+`Result<T, ApiError>`, a `[Scoped]`/`[Singleton]` service graph wired by the
+DI source generator, and a fan-out endpoint (`GET /books/{id}/detail`) that
+fetches author + reviews in parallel via `Result.TryAsync(new FanOut().Add(…))`.
+
+```sh
+dotnet run --project examples/JoakimAnder.Toolbox.Examples.WebApi
+```
+
+Use `examples/JoakimAnder.Toolbox.Examples.WebApi/WebApi.http` (REST Client,
+Rider, or VS 2022+ run these in-place) or the auto-generated OpenAPI document
+at `/openapi/v1.json`.
+
 ## Project structure
 
 - `src/JoakimAnder.Toolbox` — the library
