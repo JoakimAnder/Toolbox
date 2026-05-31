@@ -11,6 +11,7 @@ namespace JoakimAnder.Toolbox.Examples.WebApi.Shared.Repositories;
 public sealed class ReviewRepository
 {
     private readonly ConcurrentDictionary<int, Review> _reviews = new();
+    // See BookRepository for the seeded-Random + lock rationale.
     private readonly Random _latencyRandom = new(13);
     private int _nextId;
 
@@ -43,16 +44,20 @@ public sealed class ReviewRepository
     {
         await SimulateLatencyAsync(ct).ConfigureAwait(false);
 
-        if (_reviews.Values.Any(r =>
-                r.BookId == review.BookId &&
-                string.Equals(r.Reviewer, review.Reviewer, StringComparison.OrdinalIgnoreCase)))
+        lock (_reviews)
         {
-            return null;
-        }
+            if (_reviews.Values.Any(r =>
+                    r.BookId == review.BookId &&
+                    string.Equals(r.Reviewer, review.Reviewer, StringComparison.OrdinalIgnoreCase)))
+            {
+                return null;
+            }
 
-        var id = Interlocked.Increment(ref _nextId);
-        var stored = review with { Id = id };
-        return _reviews.TryAdd(id, stored) ? stored : null;
+            var id = Interlocked.Increment(ref _nextId);
+            var stored = review with { Id = id };
+            // TryAdd cannot fail here: id is globally unique via Interlocked.Increment.
+            return _reviews.TryAdd(id, stored) ? stored : null;
+        }
     }
 
     private void Seed(Review review)

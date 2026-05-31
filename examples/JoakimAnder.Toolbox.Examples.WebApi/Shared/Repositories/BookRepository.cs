@@ -13,6 +13,9 @@ namespace JoakimAnder.Toolbox.Examples.WebApi.Shared.Repositories;
 public sealed class BookRepository
 {
     private readonly ConcurrentDictionary<int, Book> _books = new();
+    // Seeded for reproducible latency in manual smoke tests. The lock in SimulateLatencyAsync
+    // is required because System.Random instance methods are not thread-safe; the seed prevents
+    // using Random.Shared, which is thread-safe but not seedable.
     private readonly Random _latencyRandom = new(42);
     private int _nextId;
 
@@ -45,15 +48,19 @@ public sealed class BookRepository
     {
         await SimulateLatencyAsync(ct).ConfigureAwait(false);
 
-        // ISBN uniqueness constraint (case-insensitive).
-        if (_books.Values.Any(b => string.Equals(b.Isbn, book.Isbn, StringComparison.OrdinalIgnoreCase)))
+        lock (_books)
         {
-            return null;
-        }
+            // ISBN uniqueness constraint (case-insensitive).
+            if (_books.Values.Any(b => string.Equals(b.Isbn, book.Isbn, StringComparison.OrdinalIgnoreCase)))
+            {
+                return null;
+            }
 
-        var id = Interlocked.Increment(ref _nextId);
-        var stored = book with { Id = id };
-        return _books.TryAdd(id, stored) ? stored : null;
+            var id = Interlocked.Increment(ref _nextId);
+            var stored = book with { Id = id };
+            // TryAdd cannot fail here: id is globally unique via Interlocked.Increment.
+            return _books.TryAdd(id, stored) ? stored : null;
+        }
     }
 
     private void Seed(Book book)

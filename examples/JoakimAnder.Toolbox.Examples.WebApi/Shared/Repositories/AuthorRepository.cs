@@ -11,6 +11,8 @@ namespace JoakimAnder.Toolbox.Examples.WebApi.Shared.Repositories;
 public sealed class AuthorRepository
 {
     private readonly ConcurrentDictionary<int, Author> _authors = new();
+    // No ListAsync: not needed by the current endpoints. Add it when a use case arrives.
+    // See BookRepository for the seeded-Random + lock rationale.
     private readonly Random _latencyRandom = new(7);
 
     public AuthorRepository()
