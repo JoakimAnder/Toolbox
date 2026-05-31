@@ -25,6 +25,10 @@ public sealed class GetBookDetailHandler(
         // 2) Author + reviews fan out in parallel.
         //    Thrown exceptions become ApiError.Upstream via Result.TryAsync.
         //    OperationCanceledException is rethrown unchanged (per the spec's catch policy).
+        //
+        //    Token names: `c` is the outer cancellation token forwarded by TryAsync;
+        //    `t` is the linked token FanOut creates internally and that gets cancelled
+        //    automatically when any sibling op faults (the fail-fast guarantee).
         var depsResult = await Result.TryAsync(
             async c =>
             {
@@ -34,6 +38,8 @@ public sealed class GetBookDetailHandler(
                     .WhenAll(c);
                 return (Author: author, Reviews: list);
             },
+            // Cast forces TError to be inferred as ApiError (the base) rather than
+            // ApiError.Upstream (the concrete case) — Result.TryAsync needs the abstract type.
             ex => (ApiError)new ApiError.Upstream(ex.GetType().Name, ex.Message),
             ct);
 
