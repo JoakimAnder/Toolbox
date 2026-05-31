@@ -1,0 +1,70 @@
+@host = http://localhost:5000
+
+### Happy path — list all seeded books
+GET {{host}}/books
+
+### Get a specific book
+GET {{host}}/books/1
+
+### NotFound demo
+GET {{host}}/books/999
+
+### FanOut showcase — book + author + reviews in parallel
+GET {{host}}/books/1/detail
+
+### Get an author
+GET {{host}}/authors/1
+
+### Author NotFound
+GET {{host}}/authors/999
+
+### CreateBook — validation failure (empty Isbn)
+POST {{host}}/books
+Content-Type: application/json
+
+{ "isbn": "", "title": "A New Hope", "authorId": 1 }
+
+### CreateBook — happy path
+POST {{host}}/books
+Content-Type: application/json
+
+{ "isbn": "978-0-13-117705-7", "title": "Effective C#", "authorId": 1 }
+
+### CreateBook — conflict (re-run the previous request once it has succeeded)
+POST {{host}}/books
+Content-Type: application/json
+
+{ "isbn": "978-0-13-117705-7", "title": "Effective C# 2nd Edition", "authorId": 1 }
+
+### CreateBook — author NotFound
+POST {{host}}/books
+Content-Type: application/json
+
+{ "isbn": "978-1-11-122233-3", "title": "Mystery Book", "authorId": 999 }
+
+### CreateReview — validation failure (rating out of range)
+POST {{host}}/books/1/reviews
+Content-Type: application/json
+
+{ "reviewer": "frank", "rating": 7, "body": "Great." }
+
+### CreateReview — happy path
+POST {{host}}/books/1/reviews
+Content-Type: application/json
+
+{ "reviewer": "frank", "rating": 5, "body": "Loved it." }
+
+### CreateReview — conflict (frank tries to review book 1 again)
+POST {{host}}/books/1/reviews
+Content-Type: application/json
+
+{ "reviewer": "frank", "rating": 4, "body": "On second thought..." }
+
+### CreateReview — NotFound (book 999 doesn't exist)
+POST {{host}}/books/999/reviews
+Content-Type: application/json
+
+{ "reviewer": "frank", "rating": 5, "body": "Good." }
+
+### OpenAPI document
+GET {{host}}/openapi/v1.json
