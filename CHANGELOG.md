@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-05-31
+
 ### Added
 
 - `ParallelFanout` (`JoakimAnder.Toolbox.Threading.FanOut`): fail-fast parallel execution of async operations that must all succeed, cancelling the remaining operations on the first fault. Fluent typed builder (`new FanOut().Add(...).Add(...).WhenAll(ct)`) plus static `WhenAll` overloads — void and typed, arity 2–8, and an `IEnumerable` void overload.
@@ -32,5 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly for predictable builds across local and CI environments.
 - `actions/setup-dotnet@v4` cache key is now `Directory.Packages.props` (Central Package Management's version source), so the cache invalidates only on real version changes.
 
-[Unreleased]: https://github.com/JoakimAnder/Toolbox/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/JoakimAnder/Toolbox/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/JoakimAnder/Toolbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/JoakimAnder/Toolbox/releases/tag/v0.2.0
