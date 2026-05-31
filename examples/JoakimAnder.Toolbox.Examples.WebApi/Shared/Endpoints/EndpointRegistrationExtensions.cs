@@ -1,7 +1,9 @@
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Authors.GetAuthor;
+using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.CreateBook;
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.GetBook;
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.GetBookDetail;
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.ListBooks;
+using JoakimAnder.Toolbox.Examples.WebApi.Features.Reviews.CreateReview;
 
 namespace JoakimAnder.Toolbox.Examples.WebApi.Shared.Endpoints;
 
@@ -17,8 +19,8 @@ public static class EndpointRegistrationExtensions
         books
             .MapListBooks()
             .MapGetBook()
-            .MapGetBookDetail();
-        // CreateBook arrives in Task 6.
+            .MapGetBookDetail()
+            .MapCreateBook();
         return app;
     }
 
@@ -26,6 +28,13 @@ public static class EndpointRegistrationExtensions
     {
         var authors = app.MapGroup("/authors");
         authors.MapGetAuthor();
+        return app;
+    }
+
+    public static IEndpointRouteBuilder MapReviewEndpoints(this IEndpointRouteBuilder app)
+    {
+        var reviews = app.MapGroup("/books/{bookId:int}/reviews");
+        reviews.MapCreateReview();
         return app;
     }
 }

@@ -10,6 +10,7 @@ var app = builder.Build();
 
 app
     .MapBookEndpoints()
-    .MapAuthorEndpoints();
+    .MapAuthorEndpoints()
+    .MapReviewEndpoints();
 
 app.Run();
