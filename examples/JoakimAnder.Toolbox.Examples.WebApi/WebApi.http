@@ -1,22 +1,28 @@
 @host = http://localhost:5000
 
+# ── Books (read) ──────────────────────────────────────────
+
 ### Happy path — list all seeded books
 GET {{host}}/books
 
 ### Get a specific book
 GET {{host}}/books/1
 
-### NotFound demo
+### Book NotFound
 GET {{host}}/books/999
 
 ### FanOut showcase — book + author + reviews in parallel
 GET {{host}}/books/1/detail
+
+# ── Authors ───────────────────────────────────────────────
 
 ### Get an author
 GET {{host}}/authors/1
 
 ### Author NotFound
 GET {{host}}/authors/999
+
+# ── Books (write) ─────────────────────────────────────────
 
 ### CreateBook — validation failure (empty Isbn)
 POST {{host}}/books
@@ -42,6 +48,8 @@ Content-Type: application/json
 
 { "isbn": "978-1-11-122233-3", "title": "Mystery Book", "authorId": 999 }
 
+# ── Reviews ───────────────────────────────────────────────
+
 ### CreateReview — validation failure (rating out of range)
 POST {{host}}/books/1/reviews
 Content-Type: application/json
@@ -65,6 +73,8 @@ POST {{host}}/books/999/reviews
 Content-Type: application/json
 
 { "reviewer": "frank", "rating": 5, "body": "Good." }
+
+# ── OpenAPI ───────────────────────────────────────────────
 
 ### OpenAPI document
 GET {{host}}/openapi/v1.json
