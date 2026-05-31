@@ -13,6 +13,8 @@ public sealed class CreateBookHandler(BookRepository books, AuthorRepository aut
         CreateBookRequest req, CancellationToken ct)
     {
         // 1) Pure validation — two steps chained with Bind, short-circuits on first failure.
+        //    Each validator closes over `req` and returns it on success, so the validated
+        //    success value would just be `req` again — `out _` discards it deliberately.
         var validated = ValidateIsbn(req).Bind(_ => ValidateTitle(req));
         if (!validated.TryGetValue(out _, out var validationError))
         {
