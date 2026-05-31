@@ -1,9 +1,10 @@
 using System.Globalization;
 using JoakimAnder.Toolbox.Examples.WebApi.Shared.Endpoints;
 using JoakimAnder.Toolbox.Results;
-using HttpResults = global::Microsoft.AspNetCore.Http.Results;
 
 namespace JoakimAnder.Toolbox.Examples.WebApi.Features.Books.CreateBook;
+
+using HttpResults = global::Microsoft.AspNetCore.Http.Results;
 
 public static class CreateBookEndpoint
 {
