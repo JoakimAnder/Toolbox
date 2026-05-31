@@ -1,5 +1,6 @@
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Authors.GetAuthor;
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.GetBook;
+using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.GetBookDetail;
 using JoakimAnder.Toolbox.Examples.WebApi.Features.Books.ListBooks;
 
 namespace JoakimAnder.Toolbox.Examples.WebApi.Shared.Endpoints;
@@ -15,8 +16,9 @@ public static class EndpointRegistrationExtensions
         var books = app.MapGroup("/books");
         books
             .MapListBooks()
-            .MapGetBook();
-        // GetBookDetail and CreateBook arrive in Tasks 5 and 6.
+            .MapGetBook()
+            .MapGetBookDetail();
+        // CreateBook arrives in Task 6.
         return app;
     }
 
