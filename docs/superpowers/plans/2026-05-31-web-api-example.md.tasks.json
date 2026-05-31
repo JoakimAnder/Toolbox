@@ -4,55 +4,55 @@
     {
       "id": 25,
       "subject": "WebApi Task 1: Project scaffolding",
-      "status": "pending",
+      "status": "completed",
       "description": "**Goal:** Create the new JoakimAnder.Toolbox.Examples.WebApi web project, register it in the solution, and confirm it boots an empty ASP.NET Core host.\n\n**Files:**\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/JoakimAnder.Toolbox.Examples.WebApi.csproj\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\n- Modify: JoakimAnder.Toolbox.slnx\n\n**Verify:** dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/JoakimAnder.Toolbox.Examples.WebApi.csproj\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\", \"JoakimAnder.Toolbox.slnx\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 26,
       "subject": "WebApi Task 2: Shared domain + ApiError DU + HTTP mapper",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [25],
       "description": "**Goal:** Create entity records, ApiError discriminated union, and the cross-cutting ApiErrorMapping.ToHttpResult switch.\n\n**Files:**\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Book.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Author.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Review.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/ApiError.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/ApiErrorMapping.cs\n\n**Verify:** dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Book.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Author.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/Review.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Domain/ApiError.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/ApiErrorMapping.cs\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 27,
       "subject": "WebApi Task 3: Repositories with seeded data and simulated latency",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [26],
       "description": "**Goal:** Create three in-memory async [Singleton] repos with seed data and simulated 15-30ms latency. AddAsync returns Task<Entity?> (null on conflict, persisted entity on success).\n\n**Files:**\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/BookRepository.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/AuthorRepository.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/ReviewRepository.cs\n\n**Verify:** dotnet build -c Release\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/BookRepository.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/AuthorRepository.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Repositories/ReviewRepository.cs\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 28,
       "subject": "WebApi Task 4: Read slices — ListBooks, GetBook, GetAuthor",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [27],
       "description": "**Goal:** Add three pure-read slices (ListBooks, GetBook, GetAuthor), the route-group composer, and wire Program.cs so the API serves real responses end-to-end.\n\n**Files:**\n- Create: 9 slice files (Response/Handler/Endpoint per slice)\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\n- Modify: examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\n\n**Verify:** dotnet build -c Release; runtime smoke via curl\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/ListBooks/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/GetBook/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Authors/GetAuthor/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 29,
       "subject": "WebApi Task 5: GetBookDetail slice — FanOut showcase",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [28],
       "description": "**Goal:** Add the cross-feature composition slice that fans out author + reviews in parallel after the root book lookup, wrapping FanOut with Result.TryAsync (exception -> ApiError.Upstream).\n\n**Files:**\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/GetBookDetail/Response.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/GetBookDetail/Handler.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/GetBookDetail/Endpoint.cs\n- Modify: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\n\n**Verify:** dotnet build -c Release; runtime smoke + time_total < 0.06s\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/GetBookDetail/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 30,
       "subject": "WebApi Task 6: Write slices — CreateBook and CreateReview",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [29],
       "description": "**Goal:** Add two POST endpoints exercising ApiError.Validation and ApiError.Conflict via sync Bind-chained validation pipelines.\n\n**Files:**\n- Create: 8 slice files for CreateBook + CreateReview\n- Modify: examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\n- Modify: examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\n\n**Verify:** dotnet build -c Release; runtime smoke covering 400/201/409/404 paths\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Books/CreateBook/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Features/Reviews/CreateReview/\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Shared/Endpoints/EndpointRegistrationExtensions.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 31,
       "subject": "WebApi Task 7: OpenAPI exposure + WebApi.http + final smoke",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [30],
       "description": "**Goal:** Enable .NET 10's built-in OpenAPI at /openapi/v1.json, add project-root WebApi.http with sample requests, run final end-to-end smoke.\n\n**Files:**\n- Modify: examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\n- Create: examples/JoakimAnder.Toolbox.Examples.WebApi/WebApi.http\n\n**Verify:** dotnet build -c Release; curl /openapi/v1.json returns 200; all WebApi.http requests execute as expected\n\n```json:metadata\n{\"files\": [\"examples/JoakimAnder.Toolbox.Examples.WebApi/Program.cs\", \"examples/JoakimAnder.Toolbox.Examples.WebApi/WebApi.http\"], \"verifyCommand\": \"dotnet build -c Release\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     },
     {
       "id": 32,
       "subject": "WebApi Task 8: README, CHANGELOG, and ROADMAP updates",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [31],
       "description": "**Goal:** Document the Web API example in README and CHANGELOG, and add new 'Examples / supporting work' section to ROADMAP with Web API example (Complete) + Performance + stress-test suite (Not started, deferred).\n\n**Files:**\n- Modify: README.md\n- Modify: CHANGELOG.md\n- Modify: docs/ROADMAP.md\n\n**Verify:** dotnet build -c Release; dotnet test all pass\n\n```json:metadata\n{\"files\": [\"README.md\", \"CHANGELOG.md\", \"docs/ROADMAP.md\"], \"verifyCommand\": \"dotnet build -c Release && dotnet test\", \"plan\": \"docs/superpowers/plans/2026-05-31-web-api-example.md\"}\n```"
     }
