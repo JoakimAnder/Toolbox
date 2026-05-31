@@ -46,6 +46,27 @@ Attributes that mark services for DI registration, plus a source generator that 
 **Status:** Complete. Spec: [2026-05-27-di-source-generator-design.md](superpowers/specs/2026-05-27-di-source-generator-design.md), plan: [2026-05-27-di-source-generator.md](superpowers/plans/2026-05-27-di-source-generator.md).
 **Depends on:** Foundation.
 
+## Examples / supporting work
+
+These artifacts support adoption and library quality. They live alongside the
+library code but are not library sub-projects, so they are tracked separately
+from the "Done so far / Remaining" footer below.
+
+### Web API example
+Minimal-API ASP.NET Core project demonstrating Result + FanOut + DI generator
+together via vertical-slice handlers.
+
+**Status:** Complete. Spec: [2026-05-31-web-api-example-design.md](superpowers/specs/2026-05-31-web-api-example-design.md), plan: [2026-05-31-web-api-example.md](superpowers/plans/2026-05-31-web-api-example.md).
+
+### Performance + stress-test suite
+BenchmarkDotNet harness exercising `FanOut` arity ladder, Result struct
+allocation behavior, and the DI generator's incremental cache. Surfaces
+library friction points (the original motivation for "stress-test the
+Toolbox by using it in a non-trivial codebase").
+
+**Status:** Not started — deferred from the Web API example brainstorm.
+Likely a separate sub-project when revisited.
+
 ## Order
 
 Foundation → CI/CD → features (Result / ParallelFanout / DI source generator) in any order.
