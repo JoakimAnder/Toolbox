@@ -19,6 +19,8 @@ internal static class ApiErrorMapping
         ApiError.Validation v  => HttpResults.BadRequest(new { type = "Validation", v.Field, v.Message }),
         ApiError.Conflict c    => HttpResults.Conflict(new { type = "Conflict",   c.Resource, c.Reason }),
         ApiError.Upstream u    => HttpResults.Json(new { type = "Upstream", u.ExceptionType, u.Message }, statusCode: 502),
+        // Unexpected uses RFC 7807 ProblemDetails (the convention for 5xx server errors),
+        // intentionally differing in body shape from the domain-failure arms above.
         ApiError.Unexpected ux => HttpResults.Problem(ux.Message, statusCode: 500),
         _ => throw new UnreachableException($"Unhandled {nameof(ApiError)} case: {err.GetType().Name}"),
     };
