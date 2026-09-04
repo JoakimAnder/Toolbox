@@ -4,4 +4,23 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
   </PropertyGroup>
+
+  <!--
+    Rules relaxed here are ones that are wrong for a runnable example app, not just inconvenient:
+      CA1515        - an app's types aren't referenced from outside the assembly.
+      CA1812        - demo service implementations (SystemClock, RedisCache, ...) are constructed
+                      only by the generated DI registration, which the analyzer can't see.
+      CA1303        - Console.WriteLine strings are demo narration; no localization is planned.
+      CA2007/MA0004 - ConfigureAwait(false) is meaningful in reusable library code, not here;
+                      a console app and ASP.NET Core's own pipeline have no SynchronizationContext
+                      to avoid resuming on.
+      MA0048        - the WebApi example groups a vertical slice's Endpoint/Request/Response/Handler
+                      as one file per feature folder; splitting by type name would scatter it.
+      CA1034/CA1724 - ApiError's nested cases are how a closed error hierarchy is expressed in
+                      C#; this is app code, not a published library surface.
+      CA5394        - Random.Shared here fakes latency in in-memory demo repos, not security.
+  -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CA1515;CA1812;CA1303;CA2007;MA0004;MA0048;CA1034;CA1724;CA5394</NoWarn>
+  </PropertyGroup>
 </Project>

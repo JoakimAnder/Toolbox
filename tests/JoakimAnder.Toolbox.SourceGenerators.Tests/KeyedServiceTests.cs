@@ -13,22 +13,22 @@ public class KeyedServiceTests
     public void Keyed_mapped_registration_emits_AddKeyed_with_literal()
     {
         var src = Generated("interface ICache { } [Singleton(typeof(ICache), Key = \"redis\")] class RedisCache : ICache { }");
-        Assert.Contains("AddKeyedSingleton<global::App.ICache, global::App.RedisCache>(\"redis\")", src);
+        Assert.Contains("AddKeyedSingleton<global::App.ICache, global::App.RedisCache>(\"redis\")", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Keyed_self_registration_emits_single_type_argument()
     {
         var src = Generated("[Transient(Key = \"fast\")] class Worker { }");
-        Assert.Contains("AddKeyedTransient<global::App.Worker>(\"fast\")", src);
+        Assert.Contains("AddKeyedTransient<global::App.Worker>(\"fast\")", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Keyed_registration_respects_group()
     {
         var src = Generated("[Scoped(Key = \"k\", Group = \"Web\")] class A { }");
-        Assert.Contains("AddAttributedWebServices(", src);
-        Assert.Contains("AddKeyedScoped<global::App.A>(\"k\")", src);
+        Assert.Contains("AddAttributedWebServices(", src, StringComparison.Ordinal);
+        Assert.Contains("AddKeyedScoped<global::App.A>(\"k\")", src, StringComparison.Ordinal);
     }
 
     [Fact]

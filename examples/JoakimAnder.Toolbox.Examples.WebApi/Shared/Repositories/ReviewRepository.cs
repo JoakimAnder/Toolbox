@@ -42,6 +42,8 @@ public sealed class ReviewRepository
     /// </summary>
     public async Task<Review?> AddAsync(Review review, CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(review);
+
         await SimulateLatencyAsync(ct).ConfigureAwait(false);
 
         lock (_reviews)

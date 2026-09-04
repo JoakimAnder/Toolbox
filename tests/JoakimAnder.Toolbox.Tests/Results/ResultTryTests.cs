@@ -122,7 +122,7 @@ public class ResultTryTests
     public async Task TryAsync_typed_rethrows_OperationCanceledException_unchanged()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
             Result.TryAsync<int, Err>(
@@ -145,7 +145,7 @@ public class ResultTryTests
         // The action receives the exact token passed in (no internal CTS is created),
         // so cancelling the outer cts is observable through `seen`.
         Assert.False(seen.IsCancellationRequested);
-        cts.Cancel();
+        await cts.CancelAsync();
         Assert.True(seen.IsCancellationRequested);
     }
 
@@ -179,7 +179,7 @@ public class ResultTryTests
     public async Task TryAsync_void_rethrows_OCE_unchanged()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
             Result.TryAsync<Err>(

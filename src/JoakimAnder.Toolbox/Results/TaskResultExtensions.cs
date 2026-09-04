@@ -6,6 +6,11 @@ namespace JoakimAnder.Toolbox.Results;
 /// Each public method validates arguments synchronously (so null-task errors surface at
 /// the call site) and then delegates to a private <c>async</c> core method.
 /// </summary>
+// S4136 wants every method named e.g. "Match" adjacent, but this file is deliberately organized
+// two levels deep: by which Result type it extends (banner-commented sections below), then by
+// each public overload immediately followed by its own private async core. Both groupings are
+// the point; flattening to satisfy same-name adjacency would lose one or the other.
+#pragma warning disable S4136
 public static class TaskResultExtensions
 {
     // -------------------------------------------------------------------------
@@ -402,3 +407,4 @@ public static class TaskResultExtensions
         r.ThrowIfFailure(exceptionMapper);
     }
 }
+#pragma warning restore S4136

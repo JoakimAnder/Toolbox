@@ -24,23 +24,3 @@ public static partial class Result
         return new Failure<TError>(error);
     }
 }
-
-/// <summary>
-/// Carrier for an inferred-type success value. Construct via <see cref="Result.Success{T}(T)"/>.
-/// Implicitly converts to <see cref="Result{T, TError}"/> for any compatible <c>TError</c>.
-/// </summary>
-public readonly struct Success<T>
-{
-    internal readonly T Value;
-    internal Success(T value) { Value = value; }
-}
-
-/// <summary>
-/// Carrier for an inferred-type failure value. Construct via <see cref="Result.Failure{TError}(TError)"/>.
-/// Implicitly converts to <see cref="Result{T, TError}"/> and <see cref="Result{TError}"/>.
-/// </summary>
-public readonly struct Failure<TError> where TError : notnull
-{
-    internal readonly TError Error;
-    internal Failure(TError error) { Error = error; }
-}

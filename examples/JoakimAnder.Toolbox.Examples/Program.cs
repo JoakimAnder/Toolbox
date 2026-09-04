@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using JoakimAnder.Toolbox.DependencyInjection;
+using JoakimAnder.Toolbox.Examples;
 using JoakimAnder.Toolbox.Results;
 using JoakimAnder.Toolbox.Threading;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,12 +84,14 @@ Console.WriteLine(label);
 static async Task<Result<UserSummary, ApiError>> GetUserSummaryAsync(
     int userId, CancellationToken cancellationToken)
 {
+    Console.WriteLine($"looking up user {userId}...");
+
     return await Result.TryAsync(
         async ct =>
         {
             var (user, orders) = await new FanOut()
-                .Add(c => FetchUserAsync(userId, c))
-                .Add(c => FetchOrdersAsync(userId, c))
+                .Add(FetchUserAsync)
+                .Add(FetchOrdersAsync)
                 .WhenAll(ct);
 
             return new UserSummary(user, orders.Length);
@@ -102,36 +105,44 @@ static async Task<Result<UserSummary, ApiError>> GetUserSummaryAsync(
         cancellationToken);
 
     // Deliberately fails: throws HttpRequestException so the boundary maps it to ApiError.Upstream.
-    static async Task<string> FetchUserAsync(int id, CancellationToken ct)
+    static async Task<string> FetchUserAsync(CancellationToken ct)
     {
         await Task.Delay(20, ct);
         throw new HttpRequestException("upstream user service refused connection");
     }
 
-    static async Task<int[]> FetchOrdersAsync(int id, CancellationToken ct)
+    static async Task<int[]> FetchOrdersAsync(CancellationToken ct)
     {
-        try { await Task.Delay(TimeSpan.FromSeconds(30), ct); }
-        catch (OperationCanceledException) { throw; }
+        await Task.Delay(TimeSpan.FromSeconds(30), ct);
         return [];
     }
 }
 
 // --- Type declarations ---
 
-interface IClock { }
-[Singleton(typeof(IClock))] sealed class SystemClock : IClock { }
-
-interface ICache { }
-[Singleton(typeof(ICache), Key = "redis")] sealed class RedisCache : ICache { }
-
-interface IGreeter { }
-[Scoped(typeof(IGreeter), Group = "Web")] sealed class Greeter : IGreeter { }
-
-internal sealed record UserSummary(string Name, int OrderCount);
-
-internal abstract record ApiError
+namespace JoakimAnder.Toolbox.Examples
 {
-    public sealed record NotFound(string Message) : ApiError;
-    public sealed record Upstream(string ExceptionType, string Message) : ApiError;
-    public sealed record Unexpected(string Message) : ApiError;
+    internal interface IClock { }
+
+    [Singleton(typeof(IClock))]
+    internal sealed class SystemClock : IClock { }
+
+    internal interface ICache { }
+
+    [Singleton(typeof(ICache), Key = "redis")]
+    internal sealed class RedisCache : ICache { }
+
+    internal interface IGreeter { }
+
+    [Scoped(typeof(IGreeter), Group = "Web")]
+    internal sealed class Greeter : IGreeter { }
+
+    internal sealed record UserSummary(string Name, int OrderCount);
+
+    internal abstract record ApiError
+    {
+        public sealed record NotFound(string Message) : ApiError;
+        public sealed record Upstream(string ExceptionType, string Message) : ApiError;
+        public sealed record Unexpected(string Message) : ApiError;
+    }
 }

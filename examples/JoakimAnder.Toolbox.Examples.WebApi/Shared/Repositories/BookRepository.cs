@@ -46,6 +46,8 @@ public sealed class BookRepository
     /// </summary>
     public async Task<Book?> AddAsync(Book book, CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(book);
+
         await SimulateLatencyAsync(ct).ConfigureAwait(false);
 
         lock (_books)

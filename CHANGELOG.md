@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   source, so IntelliSense shows their purpose and the `serviceType`/`Group`/`Key` semantics at the
   call site.
 - `global.json` SDK pin bumped to `10.0.400` (was `10.0.104`, no longer installable).
+- Analyzers tightened solution-wide: `AnalysisMode=All`, `TreatWarningsAsErrors`, plus
+  `SonarAnalyzer.CSharp`, `Roslynator.Analyzers`, and `Meziantou.Analyzer` (previously only
+  `AnalysisMode=Recommended` with warnings). Relaxations are scoped per project group in
+  `Directory.Build.props` (`.Tests`, `examples/`) with the reasoning documented inline; nothing
+  is suppressed solution-wide. Along the way: `Result<T, TError>`, `Result<TError>`,
+  `Success<T>`, `Failure<TError>`, and the whole `FanOut`/`FanOut<T1..T8>` arity ladder gained
+  real `IEquatable<T>` implementations (previously relied on the default boxing/reflection
+  `Equals`); `FanOutEngine` no longer blocks synchronously on `Task.Result`/`Cancel()`.
 
 ## [0.3.0] — 2026-05-31
 

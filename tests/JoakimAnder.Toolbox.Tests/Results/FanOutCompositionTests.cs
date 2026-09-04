@@ -76,11 +76,15 @@ public class FanOutCompositionTests
         Assert.True(combined.TryGetError(out var err));
         Assert.Equal("USER", err.Code);
 
-        static Task<Result<string, ApiError>> UserAsync(CancellationToken ct) =>
+        // S1172: the CancellationToken parameter is required by FanOut's Add() delegate shape
+        // (Func<CancellationToken, Task<...>>) even though these fakes never look at it.
+#pragma warning disable S1172
+        static Task<Result<string, ApiError>> UserAsync(CancellationToken _) =>
             Task.FromResult(Result<string, ApiError>.Failure(new ApiError("USER", "missing")));
 
-        static Task<Result<int[], ApiError>> OrdersAsync(CancellationToken ct) =>
+        static Task<Result<int[], ApiError>> OrdersAsync(CancellationToken _) =>
             Task.FromResult(Result<int[], ApiError>.Success([1, 2]));
+#pragma warning restore S1172
     }
 
     [Fact]
@@ -107,8 +111,11 @@ public class FanOutCompositionTests
         Assert.True(sw.Elapsed >= TimeSpan.FromMilliseconds(200),
             $"slow sibling should have run to completion (~250ms), took {sw.Elapsed}");
 
-        static Task<Result<string, ApiError>> FailingAsync(CancellationToken ct) =>
+        // S1172: see the comment on UserAsync above.
+#pragma warning disable S1172
+        static Task<Result<string, ApiError>> FailingAsync(CancellationToken _) =>
             Task.FromResult(Result<string, ApiError>.Failure(new ApiError("X", "x")));
+#pragma warning restore S1172
 
         async Task<Result<int, ApiError>> SlowAsync(CancellationToken ct)
         {

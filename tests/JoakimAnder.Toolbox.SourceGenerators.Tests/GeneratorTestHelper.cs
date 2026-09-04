@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -8,21 +7,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JoakimAnder.Toolbox.SourceGenerators.Tests;
-
-internal sealed record GeneratorOutcome(
-    GeneratorDriverRunResult Result,
-    ImmutableArray<Diagnostic> GeneratorDiagnostics,
-    ImmutableArray<Diagnostic> CompileErrors)
-{
-    public string GeneratedSource(string hintNameContains) =>
-        Result.Results
-            .SelectMany(r => r.GeneratedSources)
-            .Single(s => s.HintName.Contains(hintNameContains))
-            .SourceText.ToString();
-
-    public bool HasGeneratedSource(string hintNameContains) =>
-        Result.Results.SelectMany(r => r.GeneratedSources).Any(s => s.HintName.Contains(hintNameContains));
-}
 
 internal static class GeneratorTestHelper
 {

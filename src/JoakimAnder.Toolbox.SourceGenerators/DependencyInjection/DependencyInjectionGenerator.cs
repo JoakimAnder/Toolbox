@@ -36,11 +36,25 @@ public sealed class DependencyInjectionGenerator : IIncrementalGenerator
             // value-equality covers it because TBX1002's LocationInfo points at the class
             // declaration (the same syntax node from each provider's perspective).
             var reported = new HashSet<DiagnosticInfo>();
-            foreach (var arr in results.Left.Left) Collect(arr, spc, registrations, reported);
-            foreach (var arr in results.Left.Right) Collect(arr, spc, registrations, reported);
-            foreach (var arr in results.Right) Collect(arr, spc, registrations, reported);
+            foreach (var arr in results.Left.Left)
+            {
+                Collect(arr, spc, registrations, reported);
+            }
 
-            if (registrations.Count == 0) return;
+            foreach (var arr in results.Left.Right)
+            {
+                Collect(arr, spc, registrations, reported);
+            }
+
+            foreach (var arr in results.Right)
+            {
+                Collect(arr, spc, registrations, reported);
+            }
+
+            if (registrations.Count == 0)
+            {
+                return;
+            }
 
             if (!hasDi)
             {
@@ -63,10 +77,14 @@ public sealed class DependencyInjectionGenerator : IIncrementalGenerator
             if (result.Diagnostic is { } diagnostic)
             {
                 if (reported.Add(diagnostic))
+                {
                     spc.ReportDiagnostic(diagnostic.ToDiagnostic());
+                }
             }
             else if (result.Registration is { } registration)
+            {
                 sink.Add(registration);
+            }
         }
     }
 

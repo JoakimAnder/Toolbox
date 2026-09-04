@@ -1,7 +1,12 @@
 namespace JoakimAnder.Toolbox.Threading;
 
+// MA0048: this file deliberately keeps the whole FanOut<T1..T8> arity ladder together —
+// splitting eight near-identical structs into eight near-empty files would hurt, not help,
+// reviewability. See FanOut.cs for the base (non-generic) builder this ladder extends.
+#pragma warning disable MA0048
+
 /// <summary>Fan-out builder carrying one result type. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1>
+public readonly struct FanOut<T1> : IEquatable<FanOut<T1>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -11,6 +16,18 @@ public readonly struct FanOut<T1>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1> left, FanOut<T1> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1> left, FanOut<T1> right) => !left.Equals(right);
 
     public FanOut<T1, T2> Add<T2>(Func<CancellationToken, Task<T2>> operation)
     {
@@ -32,7 +49,7 @@ public readonly struct FanOut<T1>
 }
 
 /// <summary>Fan-out builder carrying two result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2>
+public readonly struct FanOut<T1, T2> : IEquatable<FanOut<T1, T2>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -42,6 +59,18 @@ public readonly struct FanOut<T1, T2>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2> left, FanOut<T1, T2> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2> left, FanOut<T1, T2> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3> Add<T3>(Func<CancellationToken, Task<T3>> operation)
     {
@@ -63,7 +92,7 @@ public readonly struct FanOut<T1, T2>
 }
 
 /// <summary>Fan-out builder carrying three result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3>
+public readonly struct FanOut<T1, T2, T3> : IEquatable<FanOut<T1, T2, T3>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -73,6 +102,18 @@ public readonly struct FanOut<T1, T2, T3>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3> left, FanOut<T1, T2, T3> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3> left, FanOut<T1, T2, T3> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4> Add<T4>(Func<CancellationToken, Task<T4>> operation)
     {
@@ -94,7 +135,7 @@ public readonly struct FanOut<T1, T2, T3>
 }
 
 /// <summary>Fan-out builder carrying four result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3, T4>
+public readonly struct FanOut<T1, T2, T3, T4> : IEquatable<FanOut<T1, T2, T3, T4>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -104,6 +145,18 @@ public readonly struct FanOut<T1, T2, T3, T4>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3, T4> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3, T4> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3, T4> left, FanOut<T1, T2, T3, T4> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3, T4> left, FanOut<T1, T2, T3, T4> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4, T5> Add<T5>(Func<CancellationToken, Task<T5>> operation)
     {
@@ -125,7 +178,7 @@ public readonly struct FanOut<T1, T2, T3, T4>
 }
 
 /// <summary>Fan-out builder carrying five result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3, T4, T5>
+public readonly struct FanOut<T1, T2, T3, T4, T5> : IEquatable<FanOut<T1, T2, T3, T4, T5>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -135,6 +188,18 @@ public readonly struct FanOut<T1, T2, T3, T4, T5>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3, T4, T5> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3, T4, T5> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3, T4, T5> left, FanOut<T1, T2, T3, T4, T5> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3, T4, T5> left, FanOut<T1, T2, T3, T4, T5> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4, T5, T6> Add<T6>(Func<CancellationToken, Task<T6>> operation)
     {
@@ -156,7 +221,7 @@ public readonly struct FanOut<T1, T2, T3, T4, T5>
 }
 
 /// <summary>Fan-out builder carrying six result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3, T4, T5, T6>
+public readonly struct FanOut<T1, T2, T3, T4, T5, T6> : IEquatable<FanOut<T1, T2, T3, T4, T5, T6>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -166,6 +231,18 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3, T4, T5, T6> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3, T4, T5, T6> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3, T4, T5, T6> left, FanOut<T1, T2, T3, T4, T5, T6> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3, T4, T5, T6> left, FanOut<T1, T2, T3, T4, T5, T6> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4, T5, T6, T7> Add<T7>(Func<CancellationToken, Task<T7>> operation)
     {
@@ -187,7 +264,7 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6>
 }
 
 /// <summary>Fan-out builder carrying seven result types. See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7>
+public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7> : IEquatable<FanOut<T1, T2, T3, T4, T5, T6, T7>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -197,6 +274,18 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3, T4, T5, T6, T7> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3, T4, T5, T6, T7> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3, T4, T5, T6, T7> left, FanOut<T1, T2, T3, T4, T5, T6, T7> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3, T4, T5, T6, T7> left, FanOut<T1, T2, T3, T4, T5, T6, T7> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4, T5, T6, T7, T8> Add<T8>(Func<CancellationToken, Task<T8>> operation)
     {
@@ -218,7 +307,7 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7>
 }
 
 /// <summary>Fan-out builder carrying eight result types (the arity ceiling). See <see cref="FanOut"/>.</summary>
-public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7, T8>
+public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7, T8> : IEquatable<FanOut<T1, T2, T3, T4, T5, T6, T7, T8>>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -228,6 +317,18 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7, T8>
         _results = results;
         _voids = voids;
     }
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut<T1, T2, T3, T4, T5, T6, T7, T8> other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut<T1, T2, T3, T4, T5, T6, T7, T8> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut<T1, T2, T3, T4, T5, T6, T7, T8> left, FanOut<T1, T2, T3, T4, T5, T6, T7, T8> right) => left.Equals(right);
+    public static bool operator !=(FanOut<T1, T2, T3, T4, T5, T6, T7, T8> left, FanOut<T1, T2, T3, T4, T5, T6, T7, T8> right) => !left.Equals(right);
 
     public FanOut<T1, T2, T3, T4, T5, T6, T7, T8> Add(Func<CancellationToken, Task> operation)
     {
@@ -241,3 +342,5 @@ public readonly struct FanOut<T1, T2, T3, T4, T5, T6, T7, T8>
         return ((T1)r[0]!, (T2)r[1]!, (T3)r[2]!, (T4)r[3]!, (T5)r[4]!, (T6)r[5]!, (T7)r[6]!, (T8)r[7]!);
     }
 }
+
+#pragma warning restore MA0048

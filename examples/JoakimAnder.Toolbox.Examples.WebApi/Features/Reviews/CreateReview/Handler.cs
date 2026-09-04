@@ -12,6 +12,8 @@ public sealed class CreateReviewHandler(BookRepository books, ReviewRepository r
     public async Task<Result<ReviewResponse, ApiError>> HandleAsync(
         int bookId, CreateReviewRequest req, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(req);
+
         // 1) Pure validation — three sync steps chained with Bind; short-circuits on first failure.
         var validated = ValidateReviewer(req)
             .Bind(_ => ValidateRating(req))

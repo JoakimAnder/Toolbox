@@ -10,14 +10,14 @@ public class AttributeEmissionTests
         var outcome = GeneratorTestHelper.Run("// empty");
         var src = outcome.GeneratedSource("Attributes.g.cs");
 
-        Assert.Contains("internal sealed class SingletonAttribute", src);
-        Assert.Contains("internal sealed class ScopedAttribute", src);
-        Assert.Contains("internal sealed class TransientAttribute", src);
-        Assert.Contains("AllowMultiple = true", src);
-        Assert.Contains("Inherited = false", src);
-        Assert.Contains("ServiceType { get; }", src);
-        Assert.Contains("string? Group { get; set; }", src);
-        Assert.Contains("string? Key { get; set; }", src);
+        Assert.Contains("internal sealed class SingletonAttribute", src, StringComparison.Ordinal);
+        Assert.Contains("internal sealed class ScopedAttribute", src, StringComparison.Ordinal);
+        Assert.Contains("internal sealed class TransientAttribute", src, StringComparison.Ordinal);
+        Assert.Contains("AllowMultiple = true", src, StringComparison.Ordinal);
+        Assert.Contains("Inherited = false", src, StringComparison.Ordinal);
+        Assert.Contains("ServiceType { get; }", src, StringComparison.Ordinal);
+        Assert.Contains("string? Group { get; set; }", src, StringComparison.Ordinal);
+        Assert.Contains("string? Key { get; set; }", src, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -26,8 +26,8 @@ public class AttributeEmissionTests
         var outcome = GeneratorTestHelper.Run("// empty");
         var src = outcome.GeneratedSource("Attributes.g.cs");
 
-        Assert.Contains("/// <summary>", src);
-        Assert.Contains("/// <param name=\"serviceType\">", src);
+        Assert.Contains("/// <summary>", src, StringComparison.Ordinal);
+        Assert.Contains("/// <param name=\"serviceType\">", src, StringComparison.Ordinal);
     }
 
     [Fact]

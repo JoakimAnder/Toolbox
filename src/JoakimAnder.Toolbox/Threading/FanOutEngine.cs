@@ -40,11 +40,11 @@ internal static class FanOutEngine
 
             if (trigger is null && completed.IsFaulted)
             {
-                var aggregate = completed.Exception!;
+                var aggregate = completed.Exception;
                 trigger = aggregate.InnerExceptions.Count == 1 ? aggregate.InnerExceptions[0] : aggregate;
                 if (!linked.IsCancellationRequested)
                 {
-                    linked.Cancel();
+                    await linked.CancelAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -56,10 +56,13 @@ internal static class FanOutEngine
 
         cancellationToken.ThrowIfCancellationRequested();
 
+        // Every task in resultTasks is already complete at this point — it was drained out of
+        // `remaining` above — so this await returns synchronously. Kept as await (not .Result)
+        // because that's still the correct way to unwrap without triggering CA1849.
         var results = new object?[resultTasks.Length];
         for (var i = 0; i < resultTasks.Length; i++)
         {
-            results[i] = resultTasks[i].Result;
+            results[i] = await resultTasks[i].ConfigureAwait(false);
         }
 
         return results;
@@ -85,10 +88,12 @@ internal static class FanOutEngine
             return op(token)
                 ?? Task.FromException<object?>(new InvalidOperationException("Operation factory returned a null Task."));
         }
+#pragma warning disable CA1031 // defense-in-depth catch-all, see the comment above.
         catch (Exception ex)
         {
             return Task.FromException<object?>(ex);
         }
+#pragma warning restore CA1031
     }
 
     private static Task Invoke(Func<CancellationToken, Task> op, CancellationToken token)
@@ -98,9 +103,11 @@ internal static class FanOutEngine
             return op(token)
                 ?? Task.FromException(new InvalidOperationException("Operation factory returned a null Task."));
         }
+#pragma warning disable CA1031 // defense-in-depth catch-all, see the comment above.
         catch (Exception ex)
         {
             return Task.FromException(ex);
         }
+#pragma warning restore CA1031
     }
 }

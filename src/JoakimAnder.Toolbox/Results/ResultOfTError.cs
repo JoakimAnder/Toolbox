@@ -2,13 +2,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace JoakimAnder.Toolbox.Results;
 
+// MA0048: named for arity (ResultOfTError.cs), parallel to ResultOfTAndTError.cs — see that
+// file's header for why. Both types can't be "Result.cs".
+#pragma warning disable MA0048
+
 /// <summary>
 /// A void-success / typed-failure container. Either succeeded with no payload, or failed
 /// with a <typeparamref name="TError"/>. The default value is "uninitialized" and throws
 /// on every operation except <see cref="IsSuccess"/>, <see cref="IsFailure"/>, and
 /// <see cref="IsDefault"/>.
 /// </summary>
-public readonly struct Result<TError> where TError : notnull
+public readonly struct Result<TError> : IEquatable<Result<TError>> where TError : notnull
 {
     private const byte StateUninitialized = 0;
     private const byte StateSuccess = 1;
@@ -44,8 +48,11 @@ public readonly struct Result<TError> where TError : notnull
     }
 #pragma warning restore CA1000
 
+    // CA2225: see ResultOfTAndTError.cs — Success()/Failure(...) are already the named factories.
+#pragma warning disable CA2225
     public static implicit operator Result<TError>(TError error) => Failure(error);
     public static implicit operator Result<TError>(Failure<TError> failure) => new Result<TError>(failure.Error);
+#pragma warning restore CA2225
 
     /// <summary>True iff the result is a success.</summary>
     public bool IsSuccess => _state == StateSuccess;
@@ -172,4 +179,21 @@ public readonly struct Result<TError> where TError : notnull
             throw new InvalidOperationException("Result is uninitialized.");
         }
     }
+
+    /// <inheritdoc/>
+    public bool Equals(Result<TError> other) =>
+        _state == other._state &&
+        (_state != StateFailure || EqualityComparer<TError?>.Default.Equals(_error, other._error));
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is Result<TError> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() =>
+        _state == StateFailure ? HashCode.Combine(_state, _error) : _state.GetHashCode();
+
+    public static bool operator ==(Result<TError> left, Result<TError> right) => left.Equals(right);
+    public static bool operator !=(Result<TError> left, Result<TError> right) => !left.Equals(right);
 }
+
+#pragma warning restore MA0048

@@ -13,37 +13,37 @@ public class RegistrationTests
     public void Self_registration_uses_single_type_argument()
     {
         var src = Generated("[Scoped] class Cache { }");
-        Assert.Contains("AddScoped<global::App.Cache>()", src);
+        Assert.Contains("AddScoped<global::App.Cache>()", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Mapped_registration_uses_two_type_arguments()
     {
         var src = Generated("interface IClock { } [Singleton(typeof(IClock))] class Clock : IClock { }");
-        Assert.Contains("AddSingleton<global::App.IClock, global::App.Clock>()", src);
+        Assert.Contains("AddSingleton<global::App.IClock, global::App.Clock>()", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Transient_lifetime_maps_to_AddTransient()
     {
         var src = Generated("[Transient] class Worker { }");
-        Assert.Contains("AddTransient<global::App.Worker>()", src);
+        Assert.Contains("AddTransient<global::App.Worker>()", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Group_emits_a_separate_method()
     {
         var src = Generated("[Scoped(Group = \"Web\")] class A { } [Scoped] class B { }");
-        Assert.Contains("AddAttributedWebServices(", src);
-        Assert.Contains("AddAttributedServices(", src);
+        Assert.Contains("AddAttributedWebServices(", src, StringComparison.Ordinal);
+        Assert.Contains("AddAttributedServices(", src, StringComparison.Ordinal);
     }
 
     [Fact]
     public void Multiple_attributes_register_in_each_group()
     {
         var src = Generated("[Scoped] [Scoped(Group = \"Web\")] class A { }");
-        Assert.Contains("AddAttributedServices(", src);
-        Assert.Contains("AddAttributedWebServices(", src);
+        Assert.Contains("AddAttributedServices(", src, StringComparison.Ordinal);
+        Assert.Contains("AddAttributedWebServices(", src, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -62,8 +62,8 @@ public class RegistrationTests
         var a = Generated("[Singleton] [Transient] class X { }");
         var b = Generated("[Singleton] [Transient] class X { }");
         Assert.Equal(a, b);
-        Assert.Contains("AddSingleton<global::App.X>()", a);
-        Assert.Contains("AddTransient<global::App.X>()", a);
+        Assert.Contains("AddSingleton<global::App.X>()", a, StringComparison.Ordinal);
+        Assert.Contains("AddTransient<global::App.X>()", a, StringComparison.Ordinal);
     }
 
     [Fact]

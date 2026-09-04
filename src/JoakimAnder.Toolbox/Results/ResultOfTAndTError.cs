@@ -2,13 +2,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace JoakimAnder.Toolbox.Results;
 
+// MA0048: this file is deliberately named for the type's arity (ResultOfTAndTError.cs), not the
+// bare type name — "Result<T, TError>" and "Result<TError>" (ResultOfTError.cs) can't both be
+// "Result.cs" without renaming one of them, which would lose the parallel naming with the other.
+#pragma warning disable MA0048
+
 /// <summary>
 /// A typed success-or-failure container. Either holds a <typeparamref name="T"/> (success)
 /// or a <typeparamref name="TError"/> (failure). The default value is "uninitialized" and
 /// throws on every operation except <see cref="IsSuccess"/>, <see cref="IsFailure"/>, and
 /// <see cref="IsDefault"/>.
 /// </summary>
-public readonly struct Result<T, TError> where TError : notnull
+public readonly struct Result<T, TError> : IEquatable<Result<T, TError>> where TError : notnull
 {
     private const byte StateUninitialized = 0;
     private const byte StateSuccess = 1;
@@ -44,10 +49,16 @@ public readonly struct Result<T, TError> where TError : notnull
     }
 #pragma warning restore CA1000
 
+    // CA2225: the point of these conversions is to be invisible at the call site (that's what
+    // makes `return value;` / `return error;` work). Success(...)/Failure(...) above are already
+    // the discoverable named factories; adding FromT/FromTError/... aliases would just be
+    // redundant surface for the same construction.
+#pragma warning disable CA2225
     public static implicit operator Result<T, TError>(T value) => new(value);
     public static implicit operator Result<T, TError>(TError error) => Failure(error);
     public static implicit operator Result<T, TError>(Success<T> success) => new(success.Value);
     public static implicit operator Result<T, TError>(Failure<TError> failure) => new(failure.Error);
+#pragma warning restore CA2225
 
     /// <summary>True iff the result holds a success value.</summary>
     public bool IsSuccess => _state == StateSuccess;
@@ -207,4 +218,29 @@ public readonly struct Result<T, TError> where TError : notnull
             throw new InvalidOperationException("Result is uninitialized.");
         }
     }
+
+    /// <inheritdoc/>
+    public bool Equals(Result<T, TError> other) =>
+        _state == other._state && _state switch
+        {
+            StateSuccess => EqualityComparer<T?>.Default.Equals(_value, other._value),
+            StateFailure => EqualityComparer<TError?>.Default.Equals(_error, other._error),
+            _ => true,
+        };
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is Result<T, TError> other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => _state switch
+    {
+        StateSuccess => HashCode.Combine(_state, _value),
+        StateFailure => HashCode.Combine(_state, _error),
+        _ => _state.GetHashCode(),
+    };
+
+    public static bool operator ==(Result<T, TError> left, Result<T, TError> right) => left.Equals(right);
+    public static bool operator !=(Result<T, TError> left, Result<T, TError> right) => !left.Equals(right);
 }
+
+#pragma warning restore MA0048

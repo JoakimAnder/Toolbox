@@ -3,6 +3,11 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
+    <!--
+      CA1707 - xunit test methods are named with underscores on purpose.
+      CA2007/MA0004 - ConfigureAwait(false) is noise in test code; there is no UI
+                      SynchronizationContext to avoid resuming on.
+    -->
+    <NoWarn>$(NoWarn);CA1707;CA2007;MA0004</NoWarn>
   </PropertyGroup>
 </Project>

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection;
 using Microsoft.CodeAnalysis;
@@ -16,7 +17,7 @@ public class DiagnosticTests
     public void Non_assignable_service_type_reports_TBX1001()
     {
         var outcome = Run("interface IFoo { } [Singleton(typeof(IFoo))] class Bar { }");
-        Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1001");
+        Assert.Contains(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1001", StringComparison.Ordinal));
         Assert.False(outcome.HasGeneratedSource("AttributedServices.g.cs"));
     }
 
@@ -24,14 +25,14 @@ public class DiagnosticTests
     public void Abstract_implementation_reports_TBX1002()
     {
         var outcome = Run("[Scoped] abstract class Base { }");
-        Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1002");
+        Assert.Contains(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1002", StringComparison.Ordinal));
     }
 
     [Fact]
     public void Static_implementation_reports_TBX1002()
     {
         var outcome = Run("[Scoped] static class Helpers { }");
-        Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1002");
+        Assert.Contains(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1002", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -40,7 +41,7 @@ public class DiagnosticTests
         // The structural check is per-type, not per-attribute — repeating the same
         // [Singleton(Key=...)] on a class would otherwise produce N identical errors.
         var outcome = Run("[Singleton(Key = \"a\")] [Singleton(Key = \"b\")] abstract class Base { }");
-        Assert.Single(outcome.GeneratorDiagnostics.Where(d => d.Id == "TBX1002"));
+        Assert.Single(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1002", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -49,22 +50,22 @@ public class DiagnosticTests
         // Each FAWMN provider runs the transform independently — without cross-provider
         // dedup in the pipeline, this would emit TBX1002 twice (once per provider).
         var outcome = Run("[Singleton] [Scoped] abstract class Base { }");
-        Assert.Single(outcome.GeneratorDiagnostics.Where(d => d.Id == "TBX1002"));
+        Assert.Single(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1002", StringComparison.Ordinal));
     }
 
     [Fact]
     public void Invalid_group_identifier_reports_TBX1003()
     {
         var outcome = Run("[Scoped(Group = \"not valid\")] class A { }");
-        Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1003");
+        Assert.Contains(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1003", StringComparison.Ordinal));
     }
 
     [Fact]
     public void Valid_sibling_still_registers_when_one_is_invalid()
     {
         var outcome = Run("interface IFoo { } [Singleton(typeof(IFoo))] class Bad { } [Scoped] class Good { }");
-        Assert.Contains(outcome.GeneratorDiagnostics, d => d.Id == "TBX1001");
-        Assert.Contains("AddScoped<global::App.Good>()", outcome.GeneratedSource("AttributedServices.g.cs"));
+        Assert.Contains(outcome.GeneratorDiagnostics, d => string.Equals(d.Id, "TBX1001", StringComparison.Ordinal));
+        Assert.Contains("AddScoped<global::App.Good>()", outcome.GeneratedSource("AttributedServices.g.cs"), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -72,10 +73,10 @@ public class DiagnosticTests
     {
         // Compile WITHOUT the DI Abstractions reference present.
         const string source = "namespace App { using JoakimAnder.Toolbox.DependencyInjection; [Scoped] class A { } }";
-        var compilation = GeneratorTestHelper.CreateCompilation(source, extraReferences: System.Array.Empty<MetadataReference>());
+        var compilation = GeneratorTestHelper.CreateCompilation(source, extraReferences: Array.Empty<MetadataReference>());
         var driver = CSharpGeneratorDriver.Create(
-            generators: new[] { new DependencyInjection.DependencyInjectionGenerator().AsSourceGenerator() });
+            generators: new DependencyInjection.DependencyInjectionGenerator().AsSourceGenerator());
         driver.RunGeneratorsAndUpdateCompilation(compilation, out _, out var diagnostics);
-        Assert.Contains(diagnostics, d => d.Id == "TBX1004");
+        Assert.Contains(diagnostics, d => string.Equals(d.Id, "TBX1004", StringComparison.Ordinal));
     }
 }

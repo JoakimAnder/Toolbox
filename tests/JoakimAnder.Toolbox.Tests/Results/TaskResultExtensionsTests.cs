@@ -241,7 +241,8 @@ public class TaskResultExtensionsTests
     [Fact]
     public async Task ThrowIfFailureAsync_on_success_returns_silently()
     {
-        await VoidOkAsync().ThrowIfFailureAsync();
+        var exception = await Record.ExceptionAsync(() => VoidOkAsync().ThrowIfFailureAsync());
+        Assert.Null(exception);
     }
 
     [Fact]

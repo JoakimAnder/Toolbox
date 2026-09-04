@@ -217,8 +217,8 @@ public class ResultOfTAndTErrorTests
     {
         var r = Result<int, Err>.Failure(new Err("X", "boom"));
         var ex = Assert.Throws<InvalidOperationException>(() => r.ValueOrThrow());
-        Assert.Contains("X", ex.Message);
-        Assert.Contains("boom", ex.Message);
+        Assert.Contains("X", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("boom", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -235,7 +235,7 @@ public class ResultOfTAndTErrorTests
     {
         var r = Result<int, Err>.Failure(new Err("X", "boom"));
         var ex = Assert.Throws<InvalidOperationException>(() => r.ValueOrThrow(_ => null!));
-        Assert.Contains("Mapped exception was null", ex.Message);
+        Assert.Contains("Mapped exception was null", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]

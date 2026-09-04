@@ -18,4 +18,4 @@ app
     .MapAuthorEndpoints()
     .MapReviewEndpoints();
 
-app.Run();
+await app.RunAsync();

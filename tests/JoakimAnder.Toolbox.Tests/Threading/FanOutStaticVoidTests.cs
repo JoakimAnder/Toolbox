@@ -37,7 +37,7 @@ public class FanOutStaticVoidTests
     public async Task Outer_cancellation_throws_operation_canceled()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => FanOut.WhenAll(
             async ct => await Task.Delay(TimeSpan.FromSeconds(30), ct),
@@ -61,7 +61,8 @@ public class FanOutStaticVoidTests
     [Fact]
     public async Task Enumerable_overload_empty_completes()
     {
-        await FanOut.WhenAll(Enumerable.Empty<Func<CancellationToken, Task>>());
+        var exception = await Record.ExceptionAsync(() => FanOut.WhenAll(Enumerable.Empty<Func<CancellationToken, Task>>()));
+        Assert.Null(exception);
     }
 
     [Fact]

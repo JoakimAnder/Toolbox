@@ -147,7 +147,8 @@ public class ResultOfTErrorTests
     public void ThrowIfFailure_on_success_returns_silently()
     {
         var r = Result<Err>.Success();
-        r.ThrowIfFailure();
+        var exception = Record.Exception(() => r.ThrowIfFailure());
+        Assert.Null(exception);
     }
 
     [Fact]
@@ -164,8 +165,8 @@ public class ResultOfTErrorTests
     {
         var r = Result<Err>.Failure(new Err("X", "boom"));
         var ex = Assert.Throws<InvalidOperationException>(() => r.ThrowIfFailure());
-        Assert.Contains("X", ex.Message);
-        Assert.Contains("boom", ex.Message);
+        Assert.Contains("X", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("boom", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -182,7 +183,7 @@ public class ResultOfTErrorTests
     {
         var r = Result<Err>.Failure(new Err("X", "boom"));
         var ex = Assert.Throws<InvalidOperationException>(() => r.ThrowIfFailure(_ => null!));
-        Assert.Contains("Mapped exception was null", ex.Message);
+        Assert.Contains("Mapped exception was null", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]

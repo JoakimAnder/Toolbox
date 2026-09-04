@@ -6,7 +6,7 @@ namespace JoakimAnder.Toolbox.Threading;
 /// exception is rethrown unwrapped. Immutable: each <c>Add</c> returns a new builder.
 /// </summary>
 // The static WhenAll convenience overloads (accepting Task/Task<T> delegates directly) land in later partial declarations (Tasks 3 and 4).
-public readonly partial struct FanOut
+public readonly partial struct FanOut : IEquatable<FanOut>
 {
     private readonly Func<CancellationToken, Task<object?>>[]? _results;
     private readonly Func<CancellationToken, Task>[]? _voids;
@@ -19,6 +19,18 @@ public readonly partial struct FanOut
 
     /// <summary>Creates an empty builder. Equivalent to <c>new FanOut()</c>.</summary>
     public static FanOut Create() => default;
+
+    /// <inheritdoc/>
+    public bool Equals(FanOut other) => _results == other._results && _voids == other._voids;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is FanOut other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(_results, _voids);
+
+    public static bool operator ==(FanOut left, FanOut right) => left.Equals(right);
+    public static bool operator !=(FanOut left, FanOut right) => !left.Equals(right);
 
     /// <summary>Adds a result-producing operation; returns the next-arity builder.</summary>
     public FanOut<T1> Add<T1>(Func<CancellationToken, Task<T1>> operation)

@@ -1,6 +1,9 @@
+using System.Runtime.InteropServices;
+
 namespace JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Model;
 
 // Exactly one of the two is non-null. Both members are equatable => cache-safe.
+[StructLayout(LayoutKind.Auto)]
 internal readonly record struct RegistrationResult(ServiceRegistration? Registration, DiagnosticInfo? Diagnostic)
 {
     public static RegistrationResult Ok(ServiceRegistration registration) => new(registration, null);

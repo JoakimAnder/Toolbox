@@ -46,7 +46,7 @@ public class FanOutStaticTypedTests
     public async Task Outer_cancellation_throws_operation_canceled()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => FanOut.WhenAll(
             async ct => { await Task.Delay(TimeSpan.FromSeconds(30), ct); return 1; },

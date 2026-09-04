@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Immutable;
+using System.Linq;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Diagnostics;
 using JoakimAnder.Toolbox.SourceGenerators.DependencyInjection.Model;
 using Microsoft.CodeAnalysis;
@@ -68,19 +70,37 @@ internal static class Parser
 
     private static bool IsAssignable(INamedTypeSymbol implementation, INamedTypeSymbol service)
     {
-        if (SymbolEqualityComparer.Default.Equals(implementation, service)) return true;
-        foreach (var iface in implementation.AllInterfaces)
-            if (SymbolEqualityComparer.Default.Equals(iface, service)) return true;
+        if (SymbolEqualityComparer.Default.Equals(implementation, service))
+        {
+            return true;
+        }
+
+        if (implementation.AllInterfaces.Any(iface => SymbolEqualityComparer.Default.Equals(iface, service)))
+        {
+            return true;
+        }
+
         for (var baseType = implementation.BaseType; baseType is not null; baseType = baseType.BaseType)
-            if (SymbolEqualityComparer.Default.Equals(baseType, service)) return true;
+        {
+            if (SymbolEqualityComparer.Default.Equals(baseType, service))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
     private static string? NamedString(AttributeData attribute, string name)
     {
-        foreach (var arg in attribute.NamedArguments)
-            if (arg.Key == name && arg.Value.Value is string s && s.Length > 0)
+        foreach (var arg in attribute.NamedArguments.Where(a => string.Equals(a.Key, name, StringComparison.Ordinal)))
+        {
+            if (arg.Value.Value is string s && s.Length > 0)
+            {
                 return s;
+            }
+        }
+
         return null;
     }
 }

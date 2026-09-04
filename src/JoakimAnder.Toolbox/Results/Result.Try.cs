@@ -24,10 +24,12 @@ public static partial class Result
         {
             throw;
         }
+#pragma warning disable CA1031 // catching everything else is Try's whole contract; see the XML doc above.
         catch (Exception ex)
         {
             return Result<T, TError>.Failure(onException(ex));
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>Void variant of <see cref="Try{T, TError}(Func{T}, Func{Exception, TError})"/>.</summary>
@@ -47,10 +49,12 @@ public static partial class Result
         {
             throw;
         }
+#pragma warning disable CA1031 // catching everything else is Try's whole contract; see the XML doc above.
         catch (Exception ex)
         {
             return Result<TError>.Failure(onException(ex));
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -75,10 +79,12 @@ public static partial class Result
         {
             throw;
         }
+#pragma warning disable CA1031 // catching everything else is Try's whole contract; see the XML doc above.
         catch (Exception ex)
         {
             return Result<T, TError>.Failure(onException(ex));
         }
+#pragma warning restore CA1031
     }
 
     /// <summary>
@@ -102,9 +108,11 @@ public static partial class Result
         {
             throw;
         }
+#pragma warning disable CA1031 // catching everything else is Try's whole contract; see the XML doc above.
         catch (Exception ex)
         {
             return Result<TError>.Failure(onException(ex));
         }
+#pragma warning restore CA1031
     }
 }

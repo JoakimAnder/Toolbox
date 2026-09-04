@@ -26,8 +26,8 @@ public sealed class GetBookDetailHandler(
         //    Thrown exceptions become ApiError.Upstream via Result.TryAsync.
         //    OperationCanceledException is rethrown unchanged (per the spec's catch policy).
         //
-        //    Token names: `c` is the outer cancellation token forwarded by TryAsync;
-        //    `t` is the linked token FanOut creates internally and that gets cancelled
+        //    Token names: c is the outer cancellation token forwarded by TryAsync.
+        //    t is the linked token FanOut creates internally and gets cancelled
         //    automatically when any sibling op faults (the fail-fast guarantee).
         var depsResult = await Result.TryAsync(
             async c =>

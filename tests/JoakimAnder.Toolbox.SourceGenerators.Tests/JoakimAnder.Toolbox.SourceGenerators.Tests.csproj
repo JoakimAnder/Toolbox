@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
+    <!--
+      NU1608 - the testing helper pins Microsoft.CodeAnalysis.Common to exactly 3.8.0; we take
+               4.11.0 deliberately so the tests exercise the same Roslyn version the generator
+               itself builds against. The mismatch is the point, not a mistake.
+    -->
+    <NoWarn>$(NoWarn);NU1608</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

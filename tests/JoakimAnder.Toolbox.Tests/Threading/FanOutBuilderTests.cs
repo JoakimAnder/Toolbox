@@ -46,7 +46,7 @@ public class FanOutBuilderTests
     public async Task Outer_cancellation_throws_operation_canceled()
     {
         using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        await cts.CancelAsync();
 
         var builder = new FanOut()
             .Add<int>(async ct => { await Task.Delay(TimeSpan.FromSeconds(30), ct); return 1; })
@@ -69,9 +69,14 @@ public class FanOutBuilderTests
     [Fact]
     public async Task Null_returning_factory_is_treated_as_fault()
     {
+        // MA0022 wants Task.FromResult here, but that's not the scenario under test: this
+        // deliberately hands back a null Task reference (not a completed task with a null
+        // result) to exercise FanOutEngine's "operation factory returned a null Task" guard.
+#pragma warning disable MA0022
         var builder = new FanOut()
             .Add<int>(_ => null!)
             .Add(_ => Task.FromResult(2));
+#pragma warning restore MA0022
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => builder.WhenAll());
     }
@@ -105,9 +110,13 @@ public class FanOutBuilderTests
     [Fact]
     public async Task Empty_builder_completes()
     {
-        await new FanOut().WhenAll();
-        await FanOut.Create().WhenAll();
-        await default(FanOut).WhenAll();
+        var ex1 = await Record.ExceptionAsync(() => new FanOut().WhenAll());
+        var ex2 = await Record.ExceptionAsync(() => FanOut.Create().WhenAll());
+        var ex3 = await Record.ExceptionAsync(() => default(FanOut).WhenAll());
+
+        Assert.Null(ex1);
+        Assert.Null(ex2);
+        Assert.Null(ex3);
     }
 
     [Fact]
