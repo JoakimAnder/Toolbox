@@ -20,19 +20,9 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     {
         var a = AsImmutableArray();
         var b = other.AsImmutableArray();
-        if (a.Length != b.Length)
-        {
-            return false;
-        }
-
+        if (a.Length != b.Length) return false;
         for (var i = 0; i < a.Length; i++)
-        {
-            if (!a[i].Equals(b[i]))
-            {
-                return false;
-            }
-        }
-
+            if (!a[i].Equals(b[i])) return false;
         return true;
     }
 
@@ -44,10 +34,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
         {
             var hash = 17;
             foreach (var item in AsImmutableArray())
-            {
                 hash = (hash * 31) + (item?.GetHashCode() ?? 0);
-            }
-
             return hash;
         }
     }

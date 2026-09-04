@@ -37,20 +37,13 @@ internal static class RegistrationEmitter
 
         for (var i = 0; i < groups.Count; i++)
         {
-            if (i > 0)
-            {
-                sb.AppendLine();
-            }
-
+            if (i > 0) sb.AppendLine();
             var methodName = "AddAttributed" + groups[i].Key + "Services";
             sb.AppendLine($"        public static global::Microsoft.Extensions.DependencyInjection.IServiceCollection {methodName}(");
             sb.AppendLine("            this global::Microsoft.Extensions.DependencyInjection.IServiceCollection services)");
             sb.AppendLine("        {");
             foreach (var reg in groups[i])
-            {
                 sb.AppendLine("            " + Line(reg));
-            }
-
             sb.AppendLine("            return services;");
             sb.AppendLine("        }");
         }
