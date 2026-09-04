@@ -21,6 +21,16 @@ public class AttributeEmissionTests
     }
 
     [Fact]
+    public void Emitted_attributes_carry_doc_comments()
+    {
+        var outcome = GeneratorTestHelper.Run("// empty");
+        var src = outcome.GeneratedSource("Attributes.g.cs");
+
+        Assert.Contains("/// <summary>", src);
+        Assert.Contains("/// <param name=\"serviceType\">", src);
+    }
+
+    [Fact]
     public void Generated_attributes_compile_clean()
     {
         var outcome = GeneratorTestHelper.Run("// empty");

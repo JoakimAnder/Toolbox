@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `[Singleton]`/`[Scoped]`/`[Transient]` DI attributes now carry XML doc comments in the generated
+  source, so IntelliSense shows their purpose and the `serviceType`/`Group`/`Key` semantics at the
+  call site.
+- `global.json` SDK pin bumped to `10.0.400` (was `10.0.104`, no longer installable).
+
 ## [0.3.0] — 2026-05-31
 
 ### Added

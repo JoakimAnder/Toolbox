@@ -13,30 +13,84 @@ internal static class AttributeSource
         #nullable enable
         namespace JoakimAnder.Toolbox.DependencyInjection
         {
+            /// <summary>
+            /// Registers the marked class as a singleton service via the generated
+            /// <c>AddAttributed{Group}Services</c> extension method.
+            /// </summary>
             [global::System.AttributeUsage(global::System.AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
             internal sealed class SingletonAttribute : global::System.Attribute
             {
+                /// <param name="serviceType">
+                /// The type to register the service against. Omit to register the marked class
+                /// against itself; otherwise it must be an interface or base type the class
+                /// implements or derives from.
+                /// </param>
                 public SingletonAttribute(global::System.Type? serviceType = null) => ServiceType = serviceType;
+
+                /// <summary>The service type to register against, or <see langword="null"/> to register the class against itself.</summary>
                 public global::System.Type? ServiceType { get; }
+
+                /// <summary>
+                /// Splices this registration into <c>AddAttributed{Group}Services</c> instead of the
+                /// default <c>AddAttributedServices</c>. Must be a valid C# identifier.
+                /// </summary>
                 public string? Group { get; set; }
+
+                /// <summary>Registers the service as keyed, via <c>AddKeyedSingleton</c>, using this string as the key.</summary>
                 public string? Key { get; set; }
             }
 
+            /// <summary>
+            /// Registers the marked class as a scoped service via the generated
+            /// <c>AddAttributed{Group}Services</c> extension method.
+            /// </summary>
             [global::System.AttributeUsage(global::System.AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
             internal sealed class ScopedAttribute : global::System.Attribute
             {
+                /// <param name="serviceType">
+                /// The type to register the service against. Omit to register the marked class
+                /// against itself; otherwise it must be an interface or base type the class
+                /// implements or derives from.
+                /// </param>
                 public ScopedAttribute(global::System.Type? serviceType = null) => ServiceType = serviceType;
+
+                /// <summary>The service type to register against, or <see langword="null"/> to register the class against itself.</summary>
                 public global::System.Type? ServiceType { get; }
+
+                /// <summary>
+                /// Splices this registration into <c>AddAttributed{Group}Services</c> instead of the
+                /// default <c>AddAttributedServices</c>. Must be a valid C# identifier.
+                /// </summary>
                 public string? Group { get; set; }
+
+                /// <summary>Registers the service as keyed, via <c>AddKeyedScoped</c>, using this string as the key.</summary>
                 public string? Key { get; set; }
             }
 
+            /// <summary>
+            /// Registers the marked class as a transient service via the generated
+            /// <c>AddAttributed{Group}Services</c> extension method.
+            /// </summary>
             [global::System.AttributeUsage(global::System.AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
             internal sealed class TransientAttribute : global::System.Attribute
             {
+                /// <param name="serviceType">
+                /// The type to register the service against. Omit to register the marked class
+                /// against itself; otherwise it must be an interface or base type the class
+                /// implements or derives from.
+                /// </param>
                 public TransientAttribute(global::System.Type? serviceType = null) => ServiceType = serviceType;
+
+                /// <summary>The service type to register against, or <see langword="null"/> to register the class against itself.</summary>
                 public global::System.Type? ServiceType { get; }
+
+                /// <summary>
+                /// Splices this registration into <c>AddAttributed{Group}Services</c> instead of the
+                /// default <c>AddAttributedServices</c>. Must be a valid C# identifier.
+                /// </summary>
                 public string? Group { get; set; }
+
+                /// <summary>Registers the service as keyed, via <c>AddKeyedTransient</c>, using this string as the key.</summary>
                 public string? Key { get; set; }
             }
         }
