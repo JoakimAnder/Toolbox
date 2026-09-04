@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-09-04
+
 ### Changed
 
 - `[Singleton]`/`[Scoped]`/`[Transient]` DI attributes now carry XML doc comments in the generated
@@ -49,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `global.json` rollForward policy is `disable` (was `latestFeature`). SDK is pinned exactly for predictable builds across local and CI environments.
 - `actions/setup-dotnet@v4` cache key is now `Directory.Packages.props` (Central Package Management's version source), so the cache invalidates only on real version changes.
 
-[Unreleased]: https://github.com/JoakimAnder/Toolbox/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/JoakimAnder/Toolbox/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/JoakimAnder/Toolbox/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/JoakimAnder/Toolbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/JoakimAnder/Toolbox/releases/tag/v0.2.0
